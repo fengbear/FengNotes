@@ -216,9 +216,9 @@ action指的是动作，awk擅长文本格式化，且输出格式化的结果�
 
 ##### awk内置变量
 
-![image-20220815195636905](picture/image-20220815195636905.png)
+![image-20220818194504739](picture/image-20220818194504739.png)
 
-##### 案例
+**案例**
 
 ```
 xf1 xf2 xf3 xf4 xf5 
@@ -249,22 +249,27 @@ awk '{print "第一列",$1,"第二列",$2}' xf.txt
 
 ##### awk参数
 
-```
--F 指定分割字段符
--v 定义或修改一个awk内部变量
--f 从脚本文件中读取awk命令
-```
+![image-20220818194546377](picture/image-20220818194546377.png)
 
-##### 案例
+**案例**
+
+测试文件
 
 ```
-a:/sdf/asdfasdf
-b:/asdf/asdfasdf
-c:/asdf/asdfasdgasdg
-d:/dsf/afsdf/asdf
-e:/adsa/asdf/asdg/asdfasdgasdg
-f:/asdf/asdfasdf/
-g:/sad
+ 1 sync:x:5:0:sync:/sbin:/bin/sync
+ 2 shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+ 3 halt:x:7:0:halt:/sbin:/sbin/halt
+ 4 mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+ 5 operator:x:11:0:operator:/root:/sbin/nologin
+ 6 games:x:12:100:games:/usr/games:/sbin/nologin
+ 7 ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+ 8 nobody:x:99:99:Nobody:/:/sbin/nologin
+ 9 systemd-network:x:192:192:systemd Network Management:/
+ 10 dbus:x:81:81:System message bus:/:/sbin/nologin
+ 11 polkitd:x:999:998:User for polkitd:/:/sbin/nologin
+ 12 libstoragemgmt:x:998:997:daemon account for libstorage
+ 13 rpc:x:32:32:Rpcbind Daemon:/var/lib/rpcbind:/sbin/nolo
+ 14 ntp:x:38:38::/etc/ntp:/sbin/nologin
 ```
 
 **显示文件第五行**
@@ -272,32 +277,148 @@ g:/sad
 ```bash
 # NR在awk表示行号，NR==5表示行号是5的那一行
 # 一个等号是修改变量值
-awk 'NR==5' xf.txt
+awk 'NR==5' pwd.txt
 
-e:/adsa/asdf/asdg/asdfasdgasdg
+operator:x:11:0:operator:/root:/sbin/nologin
 ```
 
 **显示3-5行且输出行号**
 
 ```bash
-awk 'NR==3,NR==5 {print NR,$0}' xf.txt
+awk 'NR==2,NR==5' pwd.txt
 ```
 
-**以冒号进行切割**
+给每一行的内容添加行号
 
 ```bash
-awk -F ":" '{print &1}' xf.txt
+awk '{print NR,$0}' alex.txt
+
+1 alex1 alex2 alex3 alex4 alex5
+2 alex6 alex7 alex8 alex9 alex10
+3 alex11 alex12 alex13 alex14 alex15
+4 alex16 alex17 alex18 alex19 alex20
+5 alex21 alex22 alex23 alex24 alex25
+6 alex26 alex27 alex28 alex29 alex30
+7 alex31 alex32 alex33 alex34 alex35
+8 alex36 alex37 alex38 alex39 alex40
+9 alex41 alex42 alex43 alex44 alex45
+10 alex46 alex47 alex48 alex49 alex50 alex51
+
 ```
+
+##### awk分隔符
+
+awk分隔符有两种
+
++ 输入分隔符，awk默认是空格，空白字符，变量名FS
++ 输出分隔符，OFS
+
+**FS**
+
+当我们处理特殊文件，没有空格的时候，可以自由指定分隔符
+
+```bash
+awk -F '#' '{print $1}' chaoge.txt
+```
+
+处理使用-F选项，还可以使用-v修改FS变量
+
+```bash
+awk -v FS='#' '{print $1}' chaoge.txt
+```
+
+**OFS**
+
+awk执行完命令，默认用空格隔开每一列，这个空格是awk默认输出符
+
+![image-20220818201053953](picture/image-20220818201053953.png)
+
+![image-20220818201126619](picture/image-20220818201126619.png)
+
+**输出分隔符与逗号**
+
+awk是否存在输出分隔符，特点在于`'{print $1,$3}'`逗号的区别
+
++ 添加逗号，默认是空格分隔符
+
+![image-20220818201339955](picture/image-20220818201339955.png)
+
++ 不加逗号
+
+  ![image-20220818201356226](picture/image-20220818201356226.png)
+
++ 修改输出分隔符
+
+  ![image-20220818201423805](picture/image-20220818201423805.png)
 
 ##### awk变量
 
+**awk参数**
 
+![image-20220818201452694](picture/image-20220818201452694.png)
+
+对于awk而言，变量为：
+
++ 内置变量
++ 自定义变量
+
+![image-20220818201531327](picture/image-20220818201531327.png)
+
+![image-20220818201757519](picture/image-20220818201757519.png)
+
+![image-20220818201932483](picture/image-20220818201932483.png)
 
 ##### awk格式化输出
 
-
+![image-20220818202018579](picture/image-20220818202018579.png)
 
 ##### awk模式
+
+awk是按行处理文本，现在讲解特殊pattern：BEIGIN和END
+
++ BEGIN模式是处理文本前需要执行的操作。
++ END是处理完所有行之后执行的操作。
+
+![image-20220818202214191](picture/image-20220818202214191.png)
+
+![image-20220818202225195](picture/image-20220818202225195.png)
+
+这里就简单介绍一下。还有其他的，类似如下
+
+![image-20220818202511833](picture/image-20220818202511833.png)
+
+![image-20220818202448824](picture/image-20220818202448824.png)
+
+三种模式
+
++ 空模式：没有指定任何模式（条件），因此每一行都执行了对应的动作，空模式会匹配文档的每一行。每一行都满足了空模式
++ 关系运算符模式
++ BEGIN/END模式
+
+##### awk与正则表达式
+
+正则表达式主要与awk的模式结合使用
+
++ 不指定模式，awk每一行都会执行对应的动作
++ 指定了模式，只有被模式匹配到的、符合条件的行才会执行
+
+正则要加两个/
+
+比如：找出pwd.txt中以games开头的行
+
+```c++
+grep '^games' pwd.txt
+
+awk '/^games/{print $0}' pwd.txt
+```
+
+![image-20220818203109995](picture/image-20220818203109995.png)
+
+比grep更强大的格式化文本的功能
+
+![image-20220818203203429](picture/image-20220818203203429.png)
+
+好了 以上就是全部内容了，我也是简单的摘取了一点，内容其实是不详实的，但我感觉应付面试够了，实际工作中你不会直接google就完事了，谁还慢慢看教程啊！
 
 ### 3、ps
 
@@ -309,4 +430,107 @@ awk -F ":" '{print &1}' xf.txt
 
 ### 4、find
 
+查找目录下的文件
+
+语法
+
+```bash
+find path -option 
+```
+
+简单的option
+
+```bash
+-name name, -iname name : 文件名称符合 name 的文件。iname 会忽略大小写
+
+-size n : 文件大小 是 n 单位，b 代表 512 位元组的区块，c 表示字元数，k 表示 kilo bytes，w 是二个位元组。
+
+-type c : 文件类型是 c 的文件。
+```
+
+举例
+
+```bash
+find /home -iname "*.txt"
+```
+
+上述是简单的说了一下find 还有更深层的就不提了，记不住，用到再查。
+
 ### 5、netstate
+
+![image-20220818205313170](picture/image-20220818205313170.png)
+
+![image-20220818205350451](picture/image-20220818205350451.png)
+
+![image-20220818205452582](picture/image-20220818205452582.png)
+
+### 6、常用命令
+
+#### 6.1 文件相关
+
+查看工作路径：`pwd`
+
+创建文件夹：`mkdir`
+
+进入到某个目录：`cd`
+
+递归查看当前文件夹下面的文件：`tree`
+
+创建文件：`touch file`、`ls >file`、`vi file`
+
+查看当前目录下文件：`ls`，`-l`显示详细信息，`-a`显示全部文件包括隐藏文件，`-R`连子目录一起显示
+
+文件搜索：`find`
+
+查看文件内容：`cat`
+
+复制文件：`cp file targetAdress `
+
+移动文件到某个文件夹：`mv`，`-f`强制执行，若已存在则直接覆盖，`-i`会询问是否覆盖，`u`若当前文件比目标文件新才进行覆盖更新
+
+修改文件权限：`chmod`
+
+改变文件所有者：`chown`
+
+改变文件所属命令组：`chgrp`
+
+给文件重命名：`rename`
+
+合并文件内容:`paste`
+
+排序文件内容:`sort`
+
+解压缩文件：`tar`
+
+删除：`rm`，`-f`强制删除,`-i`在删除前会询问用户是否删除,`-r`递归删除，就是全删
+
+#### 6.2 系统状态相关
+
+查看内存：`free`、`cat /proc/meminfo`可以读取
+
+- 可用/闲置物理内存数量
+- 等待被写入缓存的数量
+- 已写回磁盘的数量
+
+查看磁盘使用情况：`df -h`
+
+**查看进程**：`ps`,`-A`显示所有进程，`-a`不与terminal有关的所有进程，`-u`有效用户的相关进程，`-l`将PID详细信息列出
+
+**查看系统进程的资源占用情况：**`top`
+
+#### 6.3 网络相关
+
+查看能否连通某个网络：`ping`
+
+查看网口ip：`ifconfig`
+
+### 7、system和exec的区别？
+
+*system*是用*shell*来调用程序*=fork+exec+waitpid*，而*exec*是直接让你的程序代替原来的程序运行。
+
+*system* 是在单独的进程中执行命令，完了还会回到你的程序中。而*exec*函数是直接在你的进程中执行新的程序，新的程序会把你的程序覆盖，除非调用出错，否则你再也回不到*exec*后面的代码，就是说你的程序就变成了*exec*调用的那个程序了。
+
+**1）system中的进程一般要能够执行完，而不是死循环，否则无法返回了。**
+
+**2）exec系列函数中在Linux下常会和fork语句一起用，否则的话，当前进程被新进程替代了，无法继续执行，而使用fork创建子进程，在子进程中使用exec,当前进程仍能执行原先的任务。**
+
