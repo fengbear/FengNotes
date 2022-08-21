@@ -19,7 +19,7 @@
 
 整个 big picture 如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZUa28zEosfmp4uFA77%252F-LZUJRryGLyHUdcOnhD0%252FScreen%20Shot%202019-02-24%20at%207.43.51%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZUa28zEosfmp4uFA77%252F-LZUJRryGLyHUdcOnhD0%252FScreen%20Shot%202019-02-24%20at%207.43.51%20PM.jpg)
 
 本节的提纲如下：
 
@@ -43,11 +43,11 @@
 - 然后我们 `pin(pageid 3)`, page3 被加载进入 buffer pool
 - 我们会在后面看到一个 page table，他负责告诉我们 page 和 frame 的对应，例如：page1 在 frame1, page3 在 frame2
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/10.jpg)
+![img](pictures/10.jpg)
 
-![11.jpg](C:/Users/xf/Desktop/CMU15445/pictures/11.jpg)
+![11.jpg](pictures/11.jpg)
 
-![12.jpg](C:/Users/xf/Desktop/CMU15445/pictures/12-16610731140644.jpg)
+![12.jpg](pictures/12-16610748265954.jpg)
 
 ##### 1.2 Buffer Pool Metadata
 
@@ -87,7 +87,7 @@
 >
 >   不需要考虑回滚（如果没申请到锁，就终止操作）
 
-[![18.jpg](C:/Users/xf/Desktop/CMU15445/pictures/18.jpg)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec05/18.jpg)
+[![18.jpg](pictures/18.jpg)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec05/18.jpg)
 
 ##### 1.4 Page Table vs. Page Directory
 
@@ -100,11 +100,11 @@
 - local policies: 指每一个 query, transaction 可以有一个自己的 buffer pool， 和自己的 replacement policy。同时可以在一个共有的 buffer pool 去 share pages
 - 实际上会混合这两种主意， 比如数据 table 拥有一个 buffer pool, index (索引数据结构) 拥有另一个 buffer pool。这个我们会在 index 的课上提到。
 
-![20.jpg](C:/Users/xf/Desktop/CMU15445/pictures/20.jpg)
+![20.jpg](pictures/20.jpg)
 
 #### 2 Buffer Pool Optimizations
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/21-16610731140658.jpg)
+![img](pictures/21-16610748265958.jpg)
 
 ##### 2.1 Multiple Buffer Pools
 
@@ -118,11 +118,11 @@
 
 - Approach #2: Hashing用一个 hash function: `RID -> buffer pool id`, 把有相同 hash value 的 tuple 分配到同一个 buffer pool，提高 buffer pool 中的 spatial locality (空间局部性)。(类似 hash join)
 
-![Lec5_missing_1.jpg](C:/Users/xf/Desktop/CMU15445/pictures/missing_1.png)
+![Lec5_missing_1.jpg](pictures/missing_1.png)
 
-![Lec5_missing_2.jpg](C:/Users/xf/Desktop/CMU15445/pictures/missing_2.png)]
+![Lec5_missing_2.jpg](pictures/missing_2.png)]
 
-[![Lec5_missing_3.jpg](C:/Users/xf/Desktop/CMU15445/pictures/missing_3.png)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec05/missing_3.png)
+[![Lec5_missing_3.jpg](pictures/missing_3.png)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec05/missing_3.png)
 
 ##### 2.2 Pre-Fetching
 
@@ -133,35 +133,35 @@
 
 ###### 2.2.1 Sequential Scans
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/23-166107311406513.jpg)
+![img](pictures/23-166107482659514.jpg)
 
-![24.jpg](C:/Users/xf/Desktop/CMU15445/pictures/24.jpg)
+![24.jpg](pictures/24.jpg)
 
 Q1 在扫描 page1 的时候，buffer pool manager 发现这是一个 sequenial scan，决定 pre fetch 后面的 page，所以在同时将 page2,3 加载进 buffer pool。理想的话，等 Q1 结束对 page1 的扫描，page2,3 就已经在 buffer pool，相当于没有收到 page fault 的影响，没有浪费时间等待。
 
-![25.jpg](C:/Users/xf/Desktop/CMU15445/pictures/25.jpg)
+![25.jpg](pictures/25.jpg)
 
-![26.jpg](C:/Users/xf/Desktop/CMU15445/pictures/26.jpg)
+![26.jpg](pictures/26.jpg)
 
-![27.jpg](C:/Users/xf/Desktop/CMU15445/pictures/27.jpg)
+![27.jpg](pictures/27.jpg)
 
-[![28.jpg](C:/Users/xf/Desktop/CMU15445/pictures/28.jpg)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec05/28.jpg) 
+[![28.jpg](pictures/28.jpg)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec05/28.jpg) 
 
 ###### 2.2.2 Index Scans
 
 这里的 index 是一个 B+ Tree， 具体作法是从根节点查找至叶子节点，再水平遍历有关的叶子节点。这时候我们需要的 page 不一定是物理上连续存储的：
 
-![29.jpg](C:/Users/xf/Desktop/CMU15445/pictures/29.jpg)
+![29.jpg](pictures/29.jpg)
 
-![30.jpg](C:/Users/xf/Desktop/CMU15445/pictures/30-166107311406521.jpg)
+![30.jpg](pictures/30-166107482659521.jpg)
 
-![31.jpg](C:/Users/xf/Desktop/CMU15445/pictures/31.jpg)
+![31.jpg](pictures/31.jpg)
 
-[![32.jpg](C:/Users/xf/Desktop/CMU15445/pictures/32.jpg)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec05/32.jpg)
+[![32.jpg](pictures/32.jpg)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec05/32.jpg)
 
 下图中很明显表达，我们接下来需要的是 page3 和 page5, 它们不是连续的，也不紧跟在 page1 (当前 page) 之后。 但是 index 这个数据结构告诉我们，下一步是 page3 和 page5 被需要，因此去 pre fetch 它们俩。这里也是一个很明显的例子，操作系统在这一点帮不了我们，操作系统最多能帮我们 pre fetch 连续的 page，但是它不知道 index 的存在，没有办法帮助我们准确去得到 page3 和 page5。
 
-![33.jpg](C:/Users/xf/Desktop/CMU15445/pictures/33-166107311406525.jpg)
+![33.jpg](pictures/33-166107482659525.jpg)
 
 ##### 2.3 Scan Sharing
 
@@ -171,28 +171,28 @@ Q1 在扫描 page1 的时候，buffer pool manager 发现这是一个 sequenial 
 
 Q1 需要扫描所有的 page, 将 val 不断累加。
 
-![36.jpg](C:/Users/xf/Desktop/CMU15445/pictures/36-166107311406527.jpg)
+![36.jpg](pictures/36-166107482659527.jpg)
 
-![37.jpg](C:/Users/xf/Desktop/CMU15445/pictures/37-166107311406529.jpg)
+![37.jpg](pictures/37-166107482659529.jpg)
 
-![38.jpg](C:/Users/xf/Desktop/CMU15445/pictures/38.jpg)
+![38.jpg](pictures/38.jpg)
 
-![39.jpg](C:/Users/xf/Desktop/CMU15445/pictures/39-166107311406532.jpg)
+![39.jpg](pictures/39-166107482659532.jpg)
 
 在 Q1 扫描至 page3 的时候，Q2 加入。很巧，Q2 也需要扫描所有的 page, 将 val 不断累加。这说明 Q2 已加入就可以使用 Q1 的中间结果，并且可以和 Q1 结合在一起扫描剩下的 page：
-![40.jpg](C:/Users/xf/Desktop/CMU15445/pictures/40.jpg)
+![40.jpg](pictures/40.jpg)
 
-![41.jpg](C:/Users/xf/Desktop/CMU15445/pictures/41.jpg)
+![41.jpg](pictures/41.jpg)
 
-![42.jpg](C:/Users/xf/Desktop/CMU15445/pictures/42.jpg)
+![42.jpg](pictures/42.jpg)
 
 Q1 结束后， 这个例子中，Q2 还需要扫描它没有扫描过的 page， 因为 Q2 计算平均值， 需要知道每一个 page 上 tuple 的个数。
 
-![43.jpg](C:/Users/xf/Desktop/CMU15445/pictures/43.jpg)
+![43.jpg](pictures/43.jpg)
 
-![44.jpg](C:/Users/xf/Desktop/CMU15445/pictures/44.jpg)
+![44.jpg](pictures/44.jpg)
 
-![45.jpg](C:/Users/xf/Desktop/CMU15445/pictures/45.jpg)
+![45.jpg](pictures/45.jpg)
 
 我们也想象一下，如果没有 scan sharing 这个 feature， Q1 和 Q2 相互竞争 buffer pool 会导致这两个 Query 性能都很差。
 
@@ -206,7 +206,7 @@ sequantial scan 会将大部分 page 加载进 buffer pool, 而这些 page 又�
 
 > 大多数 DBMS 都会使用 (O_DIRECT) 来告诉 OS 不要缓存这些数据，除了 Postgres
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/47-166107311406540.jpg)
+![img](pictures/47-166107482659540.jpg)
 
 + 大部分 DBMS **使用 direct I/O**，省去文件被加载入操作系统文件缓存区。direct I/O 可以直接将文件读取到数据库缓存区的 address space。省去了从操作系统缓存区复制进数据库缓存区的 address space，这样性能也更好。
 + 也有其他的 DBMS **不使用 direct I/O**， 比如 PostgreSQL。它们从工程的角度觉得不使用 direct I/O 更好：数据库 buffer pool 出现 page fault 的时候，如果对应的 page 在操作系统的文件缓存区中，那这时候只需要一次内存中的复制 (从操作系统的文件缓存区复制到数据库 buffer pool)，而不是去硬盘做漫长的 I/O。比如 PostgreSQL 重启后 buffer pool 是空的，但是操作系统的 page cache 以及还是有对应文件，这时候可以从 page cache 中复制，避免冷启动。
@@ -237,15 +237,15 @@ LRU 和 Clock 容易收到 Sequential Flooding 的影响。Sequential Flooding �
 
 例子：
 
-![59.jpg](C:/Users/xf/Desktop/CMU15445/pictures/59.jpg)
+![59.jpg](pictures/59.jpg)
 
-![60.jpg](C:/Users/xf/Desktop/CMU15445/pictures/60.jpg)
+![60.jpg](pictures/60.jpg)
 
-![61.jpg](C:/Users/xf/Desktop/CMU15445/pictures/61.jpg)
+![61.jpg](pictures/61.jpg)
 
-![62.jpg](C:/Users/xf/Desktop/CMU15445/pictures/62.jpg)
+![62.jpg](pictures/62.jpg)
 
-[![63.jpg](C:/Users/xf/Desktop/CMU15445/pictures/63.jpg)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec05/63.jpg)
+[![63.jpg](pictures/63.jpg)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec05/63.jpg)
 
 ##### 4.4 LRU-K
 
@@ -275,7 +275,7 @@ PostgreSQL 给每一个 Query 一个独立的 buffer pool， 同时所有 Query 
 
 DBMS 可以定期遍历 page table 并将脏页写回硬盘。因为如果每次等 eviction 的时候再去 flush 脏页，会让 eviction 的过程非常的慢，所以一般会有个后台进程定期批量的去写回脏页。当安全地写会脏页之后，DBMS 可以 evict 页面或者只是取消设置 dirty bit, 因为这个页面已经**不再脏了**。需要注意的是，在写日志记录之前，我们不会去写脏页。
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/69.jpg)
+![img](pictures/69.jpg)
 
 > 如果缓存池中的page被修改了，他就成了脏页。脏页的evict需要将脏页的内容先写到磁盘中（为了持久化）才能加载入新的page，这就带来了2次的磁盘IO。为了减少每次置换的开销，我们可以用一个后台的的线程来向磁盘写入脏页。一旦脏页被写入磁盘，我们可以将其dirty flag置为false，这样他就不是脏页了。不过有一点需要注意的就是，在脏页写入磁盘前，需要先写日志（log record），这对于数据的一致性和rollback非常的重要（这也就是所谓的WAL，Write Ahead Logging）。
 

@@ -20,7 +20,7 @@
 
 Distributed DBMS 的系统架构主要指的是在哪一层上共享资源，主要分为以下 4 种：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEE2XDgHk2HIHJhfQM%252F-MAEI86s9IzmLnwJyBMC%252FScreen%20Shot%202020-06-20%20at%209.14.42%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEE2XDgHk2HIHJhfQM%252F-MAEI86s9IzmLnwJyBMC%252FScreen%20Shot%202020-06-20%20at%209.14.42%20AM.jpg)
 
 实际上 Shared Everything 就没有分布式可言了，因此严格来说，只有 Shared Memory、Shared Disk 和 Shared Disk 三种。
 
@@ -32,21 +32,21 @@ Distributed DBMS 的系统架构主要指的是在哪一层上共享资源，主
 
 在 Shared Disk 架构下，不同的 CPU 通过网络访问同一块逻辑磁盘，但各自都有自己的内存空间。这种架构的好处就是计算和存储可以独立扩容，坏处就是 CPU 之间需要通过更多的通信来传递数据和元信息。采用这种架构的数据库有很多，罗列如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEIQOvOfoKrEZgTtYl%252F-MAELTv24ughy8z2GT6R%252FScreen%20Shot%202020-06-20%20at%209.31.05%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEIQOvOfoKrEZgTtYl%252F-MAELTv24ughy8z2GT6R%252FScreen%20Shot%202020-06-20%20at%209.31.05%20AM.jpg)
 
 主要以云厂商为主，因为它们已经搭建好了稳定、成熟、可伸缩的存储服务，基于此构建 Shared Disk 架构的 Distributed DBMS 符合整体生态和分层设计理念。但 Shared Disk 的坏处在于 DBMS 对存储层没有控制权，无法决定数据的分布，因此在查询数据时无法达到最优的性能。
 
 一个 Shared Disk 的 Distributed DBMS 举例如下：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEIQOvOfoKrEZgTtYl%252F-MAEQ20z8P0-dDFyc8lX%252FScreen%20Shot%202020-06-20%20at%209.51.00%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEIQOvOfoKrEZgTtYl%252F-MAEQ20z8P0-dDFyc8lX%252FScreen%20Shot%202020-06-20%20at%209.51.00%20AM.jpg)
 
 假设有两个计算节点，客户端想要获取 Id 为 101 的数据，它可以从任意计算节点访问。如果计算节点不足时，可以按需扩容：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEQNNL-3SUKee7nxj8%252F-MAEQhR0dPt7PhyRmFGY%252FScreen%20Shot%202020-06-20%20at%209.53.57%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEQNNL-3SUKee7nxj8%252F-MAEQhR0dPt7PhyRmFGY%252FScreen%20Shot%202020-06-20%20at%209.53.57%20AM.jpg)
 
 但如果客户端想要修改某条数据：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEQNNL-3SUKee7nxj8%252F-MAERS4N7MMGDxAhcRTM%252FScreen%20Shot%202020-06-20%20at%209.57.11%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEQNNL-3SUKee7nxj8%252F-MAERS4N7MMGDxAhcRTM%252FScreen%20Shot%202020-06-20%20at%209.57.11%20AM.jpg)
 
 由于其它节点可能正缓存着 Page ABC，更新节点需要通过某种方式通知其它节点 Page ABC 已经被修改。由于既有的统一存储层不会再增加这样一层 Pub/Sub 逻辑，那么这种更新传播的逻辑就必须在计算层实现，且我们无法假设节点间的网络通信是可靠的，这也是 Shared-Disk 架构需要考虑的重要问题。
 
@@ -56,19 +56,19 @@ Shared Nothing，顾名思义，每个 CPU 都拥有独立的内存、磁盘，�
 
 使用 Shared Nothing 架构的数据库有很多，罗列如下：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEVv9OSchP2vkDD5Un%252F-MAEW7z035nQGUGU1HoZ%252FScreen%20Shot%202020-06-20%20at%2010.17.21%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEVv9OSchP2vkDD5Un%252F-MAEW7z035nQGUGU1HoZ%252FScreen%20Shot%202020-06-20%20at%2010.17.21%20AM.jpg)
 
 一个 Shared Nothing 的 Distributed DBMS 需要将数据分片到不同的节点上，每个节点拥有整个数据库的一小部分，如果查询所需的数据只落在一个节点上，就与单节点数据库无二，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEVv9OSchP2vkDD5Un%252F-MAEYYqW6kVStp125lUm%252FScreen%20Shot%202020-06-20%20at%2010.26.05%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEVv9OSchP2vkDD5Un%252F-MAEYYqW6kVStp125lUm%252FScreen%20Shot%202020-06-20%20at%2010.26.05%20AM.jpg)
 
 ID 为 1-150 之间的数据落在上面的节点，151-300 之间的数据落在下面的节点。像“哪个节点存储哪些范围的数据”这样的信息会有一个配置中心来存储。如果客户端要查询 Id=200 的数据，那么只需要访问下面的节点即可。如果客户端要同时获取 Id=10 和 Id=200 的数据，事情就会变得更复杂一些：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEVv9OSchP2vkDD5Un%252F-MAEZQqN_awa_odLccug%252FScreen%20Shot%202020-06-20%20at%2010.31.49%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEVv9OSchP2vkDD5Un%252F-MAEZQqN_awa_odLccug%252FScreen%20Shot%202020-06-20%20at%2010.31.49%20AM.jpg)
 
 如上面的节点接收到请求，那么它要么将请求转发给下面的节点，要么从下面的节点读取响应的数据，然后在内部同时处理两个请求，这里就有一些设计决定需要做。如果 DBMS 的容量不够，就需要做在线扩容：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEVv9OSchP2vkDD5Un%252F-MAE_KEMzGIEkvrhs-Ij%252FScreen%20Shot%202020-06-20%20at%2010.36.01%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEVv9OSchP2vkDD5Un%252F-MAE_KEMzGIEkvrhs-Ij%252FScreen%20Shot%202020-06-20%20at%2010.36.01%20AM.jpg)
 
 这时候需要对外透明地将上下两个节点中的一部分数据迁移到中间节点，平衡所有节点的数据，这里也有许多问题需要解决。
 
@@ -88,7 +88,7 @@ ID 为 1-150 之间的数据落在上面的节点，151-300 之间的数据落�
 
 以 MongoDB 为例：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEVv9OSchP2vkDD5Un%252F-MAEkow63D9L6tKbfruP%252FScreen%20Shot%202020-06-20%20at%2011.26.14%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEVv9OSchP2vkDD5Un%252F-MAEkow63D9L6tKbfruP%252FScreen%20Shot%202020-06-20%20at%2011.26.14%20AM.jpg)
 
 在 MongoDB 集群中有 3 种角色，Router、Config Server 以及 Shard。所有请求都打到 Router 上，Router 从 Config Server 中获取路由信息，即哪些数据存放在哪些分片上，然后根据这些路由信息将请求发送到对应的分片上执行。
 
@@ -102,7 +102,7 @@ Distributed DBMS 的用户不应该知道数据具体存储的地点，或者数
 
 假设单个节点有足够的容量存储单张表，我们可以简单地让每个节点只存储一张表：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEVv9OSchP2vkDD5Un%252F-MAEtFnb6ggodt5O7X8W%252FScreen%20Shot%202020-06-20%20at%2012.03.03%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEVv9OSchP2vkDD5Un%252F-MAEtFnb6ggodt5O7X8W%252FScreen%20Shot%202020-06-20%20at%2012.03.03%20PM.jpg)
 
 如果只存在单表查询，这种方案是最理想的。但问题也很多，如数据分布不均匀，只能在应用层做 Join 等等
 
@@ -115,19 +115,19 @@ Distributed DBMS 的用户不应该知道数据具体存储的地点，或者数
 
 具体的分片案例如下：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEuYlTbalJlwf9jpVZ%252F-MAEuiin4vZbx441V6m2%252FScreen%20Shot%202020-06-20%20at%2012.09.30%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEuYlTbalJlwf9jpVZ%252F-MAEuiin4vZbx441V6m2%252FScreen%20Shot%202020-06-20%20at%2012.09.30%20PM.jpg)
 
 对于这种分片方案，最理想的查询就是按 partitionKey 来点查数据。常用的 Hash Partitioning 算法就是一致性哈希 (Consistent Hashing)，其原理这里不再赘述。
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEuYlTbalJlwf9jpVZ%252F-MAEv4oni9OXpt97BsU0%252FScreen%20Shot%202020-06-20%20at%2012.11.05%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEuYlTbalJlwf9jpVZ%252F-MAEv4oni9OXpt97BsU0%252FScreen%20Shot%202020-06-20%20at%2012.11.05%20PM.jpg)
 
 在 Shared Nothing 架构下，通常是物理分片：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEuYlTbalJlwf9jpVZ%252F-MAEvI4cpUbx26IDBc6G%252FScreen%20Shot%202020-06-20%20at%2012.11.59%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEuYlTbalJlwf9jpVZ%252F-MAEvI4cpUbx26IDBc6G%252FScreen%20Shot%202020-06-20%20at%2012.11.59%20PM.jpg)
 
 在 Shared Disk 架构下，通常是逻辑分片：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEuYlTbalJlwf9jpVZ%252F-MAEvNWJixJBbCBfA2eV%252FScreen%20Shot%202020-06-20%20at%2012.12.22%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEuYlTbalJlwf9jpVZ%252F-MAEvNWJixJBbCBfA2eV%252FScreen%20Shot%202020-06-20%20at%2012.12.22%20PM.jpg)
 
 #### 4 Transaction Coordination
 
@@ -141,11 +141,11 @@ Distributed DBMS 的用户不应该知道数据具体存储的地点，或者数
 
 举例如下：假设一个 DBMS 有 4 个分片，应用需要通过一个事务修改 P1、P3、P4 上的数据，首先需要从 Coordinator 上请求 P1、P3、P4 的锁，
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEvgDmrPtN0QEoIw0H%252F-MAF46dy8E3Loot6mDRc%252FScreen%20Shot%202020-06-20%20at%2012.54.54%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAEvgDmrPtN0QEoIw0H%252F-MAF46dy8E3Loot6mDRc%252FScreen%20Shot%202020-06-20%20at%2012.54.54%20PM.jpg)
 
 拿到锁后，应用就可以到 P1、P3、P4 上修改数据 (未提交)，修改完毕后再向 Coordinator 发送 Commit 请求，Coordinator 询问各个分片刚才的修改是否可以安全地提交，可以就提交，然后 Coordinator 返回 Ack：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAF4aKER1d9XLGhj17h%252F-MAF5-04Vga4p-oqew2X%252FScreen%20Shot%202020-06-20%20at%2012.58.45%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAF4aKER1d9XLGhj17h%252F-MAF5-04Vga4p-oqew2X%252FScreen%20Shot%202020-06-20%20at%2012.58.45%20PM.jpg)
 
 许多数据库厂商也出售类似 TP Monitor 的产品，如 Apache Omid、IBM Transac 等等。
 
@@ -153,7 +153,7 @@ Distributed DBMS 的用户不应该知道数据具体存储的地点，或者数
 
 实现 Centralized Coordinator 的另一种方案是 Middleware，对于应用来说，Middleware 就是 Distributed Database 本身，Middleware 负责与后面的所有分片交互，协调事务的执行。如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAF4aKER1d9XLGhj17h%252F-MAF7YUiZtJ4XEVbiPms%252FScreen%20Shot%202020-06-20%20at%201.09.55%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAF4aKER1d9XLGhj17h%252F-MAF7YUiZtJ4XEVbiPms%252FScreen%20Shot%202020-06-20%20at%201.09.55%20PM.jpg)
 
 Facebook 运行着世界上最大的 MySQL 集群，采用的就是这种方案。它们的 Middleware 负责处理分布式事务、路由、分片等所有逻辑
 
@@ -161,7 +161,7 @@ Facebook 运行着世界上最大的 MySQL 集群，采用的就是这种方案�
 
 Decentralized Coordinator 的基本思路就是，执行某个事务时，会选择一个分片充当 Master，后者负责询问涉及事务的其它分片是否可以执行事务，完成事务的提交或中止：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAF7nlN5AKW9LrytvMP%252F-MAF8KCwNe53Dc1dgLLM%252FScreen%20Shot%202020-06-20%20at%201.13.19%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAF7nlN5AKW9LrytvMP%252F-MAF8KCwNe53Dc1dgLLM%252FScreen%20Shot%202020-06-20%20at%201.13.19%20PM.jpg)
 
 #### 5 Distributed Concurrency Control
 
@@ -174,7 +174,7 @@ Decentralized Coordinator 的基本思路就是，执行某个事务时，会选
 
 举个例子，假如我们要实现分布式的 2PL：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAF7nlN5AKW9LrytvMP%252F-MAF9_D2yNtDtjFrbl5v%252FScreen%20Shot%202020-06-20%20at%201.18.28%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-MAF7nlN5AKW9LrytvMP%252F-MAF9_D2yNtDtjFrbl5v%252FScreen%20Shot%202020-06-20%20at%201.18.28%20PM.jpg)
 
 A 数据在 Node 1 上，B 数据在 Node 2 上，因为没有中心化的角色存在，一旦发现如上图所示的死锁，双方都不知道是应该中止还是继续等待。从这个例子我们可以看出将并发控制升级到分布式并发控制，有许多问题要解决。
 

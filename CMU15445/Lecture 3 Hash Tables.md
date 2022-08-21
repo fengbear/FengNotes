@@ -2,7 +2,7 @@
 
 本节开始之前，先看一下目前课程的进度状态：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZm-dCZw2aX5oghZvtx%252F-LZlixmK1o4A-8LSbzNf%252FScreen%20Shot%202019-02-28%20at%209.33.02%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZm-dCZw2aX5oghZvtx%252F-LZlixmK1o4A-8LSbzNf%252FScreen%20Shot%202019-02-28%20at%209.33.02%20AM.jpg)
 
 为了支持 DBMS 更高效地从 pages 中读取数据，DBMS 的设计者需要灵活运用一些数据结构及算法，其中对于 DBMS 最重要的两个是：
 
@@ -11,7 +11,7 @@
 
 #### 1 Data Structure in DBMS
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/4.jpg)
+![img](pictures/4.jpg)
 
 - Internal Metadata: 用于管理数据库内部元数据的数据结构，如 page table, page directory。
 - Core Data Storage: 存储 tuple / 表格的数据结构，如：Memacache 数据库用 hash table,　MySQL 使用 B + 树
@@ -25,7 +25,7 @@
 
 #### 2  Hash Table Overview
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/6.jpg)
+![img](pictures/6.jpg)
 
 - 空间复杂度是 O(n), hash table 并不是一个能节省存储空间的数据结构。
 - 查询时间复杂度：
@@ -49,13 +49,13 @@ Hash Table 主要分为两部分：
 
 由于 DBMS 内使用的 Hash Function  并不会暴露在外，因此没必要使用加密（cryptographic）哈希函数，我们希望它速度越快，collision rate 越低越好。目前各 DBMS 主要在用的 Hash Functions 包括：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/13-16610731400814.jpg)
+![img](pictures/13-16610748652244.jpg)
 
 #### 4 Static Hashing Schemes
 
 Static Hashing Schemes 正如 staic 所说，这种 scheme 下的 hash table 的容量是固定的。如果我们需要在 hash 的同时，发现容量不够，只能 resize 到更大的容量，这时我们需要将所有的 key 再重新 hash 进扩大容量的 hash table。这种 resize 在 static hashing scheme 意味者 rehashing，这个操作对性能来说是灾难级别的。很显然如果我们能一开始就知道**合适的容量** ,　就能直接避免这部分的浪费时间。
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/16-16610731400816.jpg)
+![img](pictures/16-16610748652247.jpg)
 
 ##### 4.1 Linear Probe Hashing
 
@@ -63,31 +63,31 @@ Linear Probe Hashing 是 open address hashing 的一种。
 
 Linear Probing 方式虽然简单，但并不是解决冲突的最好的策略，因为它会导致**同类哈希的聚集 (Primary Clustering)**。这导致搜索哈希表时，冲突依然存在。如果我们要访问 Edward 的信息，因为 Edward 的社保号 111-00-1235 哈希为 1235，然而我们在 1235 位置找到的是 Bob，所以再搜索 1236，找到的却是 Danny，以此类推直到找到 Edward。
 
-![17.jpg](C:/Users/xf/Desktop/CMU15445/pictures/17.jpg)
+![17.jpg](pictures/17.jpg)
 
 ###### 4.1.2 Insert
 
 hash table 存储不仅仅是 `value`，而是 `(key, value)` 这一对。这是因为 Linear Probe Hashing 会遇到冲突，在查询时需要比较 key 来确定是否找到 (key 相等) 或者只是一次冲突 (key 不相等)。
 
-![18.jpg](C:/Users/xf/Desktop/CMU15445/pictures/18-16610731400829.jpg)
+![18.jpg](pictures/18-16610748652249.jpg)
 
-![19.jpg](C:/Users/xf/Desktop/CMU15445/pictures/19.jpg)
+![19.jpg](pictures/19.jpg)
 
 下图中 C 和 A 的 hash 位置相同 (冲突), 我们将 C 写在 A 的后面，并 A 连接 C：
 
-![20.jpg](C:/Users/xf/Desktop/CMU15445/pictures/20-166107314008212.jpg)
+![20.jpg](pictures/20-166107486522412.jpg)
 
 下图中 D 和 C 的 hash 位置相同 (冲突), 我们将 D 写在 C 的后面，并 C 连接 D：
 
-![21.jpg](C:/Users/xf/Desktop/CMU15445/pictures/21-166107314008214.jpg)
+![21.jpg](pictures/21-166107486522414.jpg)
 
 下图中 E 和 A/C 的 hash 位置相同 (冲突), 我们将 E 写在 C 的后面，**但是 C 后面被 D 占有了**，所以将 E 写在 D 后面，并 D 连接 E：
 
-![22.jpg](C:/Users/xf/Desktop/CMU15445/pictures/22-166107314008216.jpg)
+![22.jpg](pictures/22-166107486522416.jpg)
 
 下图中 F 和 E 的 hash 位置相同 (冲突), 我们将 F 写在 E 的后面，并 E 连接 F：
 
-![23.jpg](C:/Users/xf/Desktop/CMU15445/pictures/23-166107314008218.jpg)
+![23.jpg](pictures/23-166107486522418.jpg)
 
 ###### 4.1.2 Delete
 
@@ -95,23 +95,23 @@ hash table 存储不仅仅是 `value`，而是 `(key, value)` 这一对。这是
 
 下图中我们想删除 C, 我们已经见到 C 和 A 冲突。我们看第一个位置是 key 是 A, 而 A != C, 然后往下看：
 
-![24.jpg](C:/Users/xf/Desktop/CMU15445/pictures/24-166107314008220.jpg)
+![24.jpg](pictures/24-166107486522420.jpg)
 
 下图中，我们发现在第二个位置，hash table 条目中的 key 是 C，而我们就想删去 C, C==C。这个条目被删除：
 
-![25.jpg](C:/Users/xf/Desktop/CMU15445/pictures/25-166107314008222.jpg)
+![25.jpg](pictures/25-166107486522422.jpg)
 
 **Find D after delete C**
 
 下图中，我们想寻找 D。由于之前 D 和 C 的 hash 位置相同 (冲突)，而 C 已经被删除，D 失去了和 C 的联系。导致我们不能找到 D：
 
-![26.jpg](C:/Users/xf/Desktop/CMU15445/pictures/26-166107314008224.jpg)
+![26.jpg](pictures/26-166107486522424.jpg)
 
 解决方法1：Tombstone
 
 解决上述问题的第一种方法是使用一个墓碑:　在上面的例子中，我们删除了 C，但是留下了一个 C 的墓碑，墓碑依然保留着到 D 的链接。通过这个墓碑的链接我们可以找到 D:
 
-![27.jpg](C:/Users/xf/Desktop/CMU15445/pictures/27-166107314008226.jpg)
+![27.jpg](pictures/27-166107486522426.jpg)
 
 **这种作法的缺点是：保存墓碑会占有空间。**
 
@@ -121,15 +121,15 @@ hash table 存储不仅仅是 `value`，而是 `(key, value)` 这一对。这是
 
 下面的例子中，只能移动和已被删除**有联系的条目**
 
-![28.jpg](C:/Users/xf/Desktop/CMU15445/pictures/28-166107314008228.jpg)
+![28.jpg](pictures/28-166107486522428.jpg)
 
-![29.jpg](C:/Users/xf/Desktop/CMU15445/pictures/29-166107314008230.jpg)
+![29.jpg](pictures/29-166107486522430.jpg)
 
-![30.jpg](C:/Users/xf/Desktop/CMU15445/pictures/30-166107314008232.jpg)
+![30.jpg](pictures/30-166107486522432.jpg)
 
 下图中检查 B 是否和被删除的条目 C 存在联系，发现 B 就在它自己应该在的地方，而和其他条目无任何联系，因次不移动 B。**无视那个从上到下的箭头**：
 
-![31.jpg](C:/Users/xf/Desktop/CMU15445/pictures/31-166107314008234.jpg)
+![31.jpg](pictures/31-166107486522434.jpg)
 
 缺点就是删除会变得十分麻烦
 
@@ -142,7 +142,7 @@ hash table 存储不仅仅是 `value`，而是 `(key, value)` 这一对。这是
 - value list 存储重复 key 所拥有的 value
 - 存储 key 和 value，这样即使 key 重复，value 值也不一样。**这种方式更加常见。**
 
-![32.jpg](C:/Users/xf/Desktop/CMU15445/pictures/32-166107314008236.jpg)
+![32.jpg](pictures/32-166107486522436.jpg)
 
 > 在hash表中，如果我们想在哈希表中记录相同的key不同的value，可以有2种选择。一种选择是给每个key的slot指向一个专门的list，另一种方法是存储冗余的元素。实战中一般第二种方法用的多一些。
 
@@ -150,25 +150,25 @@ hash table 存储不仅仅是 `value`，而是 `(key, value)` 这一对。这是
 
 Robin Hood Hashing 和 Linear Probe Hashing 相比，更可以去平衡冲突，让冲突的 key 离它应该拥有的位置 (optimal position) 近一些。
 
-![33.jpg](C:/Users/xf/Desktop/CMU15445/pictures/33-166107314008238.jpg)
+![33.jpg](pictures/33-166107486522438.jpg)
 
-![34.jpg](C:/Users/xf/Desktop/CMU15445/pictures/34.jpg)
+![34.jpg](pictures/34.jpg)
 
-![35.jpg](C:/Users/xf/Desktop/CMU15445/pictures/35.jpg)
+![35.jpg](pictures/35.jpg)
 
 下图中，C 与 A 冲突于红色箭头所指的位置。
 
 - 这时 A 离它的 optimal postion 距离为 0, C 离它的 optimal postion 距离为 0。两值相等，C 不能获得 A 的位置。
 - C 获得 A 后面空的位置，C 离它的 optimal postion 距离为 1
 
-![36.jpg](C:/Users/xf/Desktop/CMU15445/pictures/36-166107314008242.jpg)
+![36.jpg](pictures/36-166107486522442.jpg)
 
 下图中，D 与 C 冲突于红色箭头所指的位置。
 
 - 这时 C 离它的 optimal postion 距离为 1, D 离它的 optimal postion 距离为 0。D 的距离值小于 C 的距离值，D 不能获得 C 的位置。
 - D 获得 C 后面空的位置，D 离它的 optimal postion 距离为 1
 
-![37.jpg](C:/Users/xf/Desktop/CMU15445/pictures/37-166107314008244.jpg)
+![37.jpg](pictures/37-166107486522444.jpg)
 
 **下两张图中** , E 与 A 冲突于红色箭头所指的位置。
 
@@ -178,16 +178,16 @@ Robin Hood Hashing 和 Linear Probe Hashing 相比，更可以去平衡冲突，
 - E 获得 C 后面空的位置，然后 E 与 D 冲突。这时 D 离它的 optimal postion 距离为 1, E 离它的 optimal postion 距离为 2。**E 的距离值大于 D 的距离值，E 获得 D 的位置。**
 - D 只能向后移动，同时也更新自己离自己 optimal position 的距离
 
-![38.jpg](C:/Users/xf/Desktop/CMU15445/pictures/38-166107314008246.jpg)
+![38.jpg](pictures/38-166107486522546.jpg)
 
-![39.jpg](C:/Users/xf/Desktop/CMU15445/pictures/39-166107314008248.jpg)
+![39.jpg](pictures/39-166107486522548.jpg)
 
 下图中，F 与 D 冲突于红色箭头所指的位置。
 
 - 这时 D 离它的 optimal postion 距离为 2, F 离它的 optimal postion 距离为 1。F 的距离值小于 D 的距离值，F 不能获得 D 的位置。
 - F 获得 D 后面空的位置，F 离它的 optimal postion 距离为 1
 
-![40.jpg](C:/Users/xf/Desktop/CMU15445/pictures/40-166107314008250.jpg)
+![40.jpg](pictures/40-166107486522550.jpg)
 
 Robin Hood Hashing 平均了一下各个 key 离自己 optimal position 的距离。但是它在 insert 的时候，有可能会调整其他条目的位置，在我们的例子中，在 insert E 的时候调整了 D 的位置。说明它会需要更多 write operation 的次数，另外在 insert 的时候它也有更多条件需要检查，这会造成更多的 branch miss prediction。
 
@@ -206,19 +206,19 @@ Cuckoo Hashing 使用多个 hash table, 每个 hash table 拥有自己的 hash f
 
 **缺点是插入性能差，在容量小的情况下很容易冲突。连锁的冲突会陷入死循环，解决只能增加容量并且 rehash。**
 
-![41.jpg](C:/Users/xf/Desktop/CMU15445/pictures/41-166107314008252.jpg)
+![41.jpg](pictures/41-166107486522552.jpg)
 
 下图中，A 对应的位置都是空的，A 可以被插入至任何一个 hash table，例子中选择了 #1:
 
-![42.jpg](C:/Users/xf/Desktop/CMU15445/pictures/42-166107314008254.jpg)
+![42.jpg](pictures/42-166107486522554.jpg)
 
 下图中，B 对应的位置只有在 #2 是空的，那么插入至 #2
 
-![43.jpg](C:/Users/xf/Desktop/CMU15445/pictures/43-166107314008356.jpg)
+![43.jpg](pictures/43-166107486522556.jpg)
 
-![44.jpg](C:/Users/xf/Desktop/CMU15445/pictures/44-166107314008360.jpg)
+![44.jpg](pictures/44-166107486522558.jpg)
 
-![45.jpg](C:/Users/xf/Desktop/CMU15445/pictures/45-166107314008358.jpg)
+![45.jpg](pictures/45-166107486522560.jpg)
 
 下面几张图中
 
@@ -226,13 +226,13 @@ Cuckoo Hashing 使用多个 hash table, 每个 hash table 拥有自己的 hash f
 - B 被 rehash 到 #1，在 #1 中 B 对应的位置也不是空的，B 代替占有位置的 key A
 - A 被 rehash 到 #2, 在 #2 中对应的位置是空的
 
-![46.jpg](C:/Users/xf/Desktop/CMU15445/pictures/46.jpg)
+![46.jpg](pictures/46.jpg)
 
-![47.jpg](C:/Users/xf/Desktop/CMU15445/pictures/47-166107314008363.jpg)
+![47.jpg](pictures/47-166107486522563.jpg)
 
-![48.jpg](C:/Users/xf/Desktop/CMU15445/pictures/48-166107314008366.jpg)
+![48.jpg](pictures/48-166107486522565.jpg)
 
-![49.jpg](C:/Users/xf/Desktop/CMU15445/pictures/49.jpg)
+![49.jpg](pictures/49.jpg)
 
 在 Cuckoo Hashing 中**有可能不终止**，即进入一个死循环，永远找不到能插入的地方。这时候说明 hash table 容量太小，需要 `resize` 到更大的容量。
 
@@ -252,11 +252,11 @@ Chained Hashing 又称 Hashing with Chaining。特征是每一个 hash table 中
 
 缺点是每一个 linked list 如果很长，就变成 O(n)。
 
-![51.jpg](C:/Users/xf/Desktop/CMU15445/pictures/51.jpg)
+![51.jpg](pictures/51.jpg)
 
-![52.jpg](C:/Users/xf/Desktop/CMU15445/pictures/52.jpg)
+![52.jpg](pictures/52.jpg)
 
-![53.jpg](C:/Users/xf/Desktop/CMU15445/pictures/53.jpg)
+![53.jpg](pictures/53.jpg)
 
 ##### 5.2 Extendible Hashing
 
@@ -265,15 +265,15 @@ Chained Hashing 又称 Hashing with Chaining。特征是每一个 hash table 中
 - n≥m 恒成立
 - 如果 local bucket 满了 (overflow)，那就增加一个 local bit 去容纳更多。如果 n=m，那就先增加一个 global bit，再增加 local bit。使 n≥m 条件依然成立
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/55.jpg)
+![img](pictures/55.jpg)
 
 ###### 5.2.1 Find A
 
-![56.jpg](C:/Users/xf/Desktop/CMU15445/pictures/56.jpg)
+![56.jpg](pictures/56.jpg)
 
 ###### 5.2.2 Insert B - No Overflow
 
-![57.jpg](C:/Users/xf/Desktop/CMU15445/pictures/57.jpg)
+![57.jpg](pictures/57.jpg)
 
 ###### 5.2.3 Insert C - Overflow
 
@@ -281,17 +281,17 @@ Chained Hashing 又称 Hashing with Chaining。特征是每一个 hash table 中
 
 我们正如前面介绍的，先增加 global bit 到 3, 再将 local bit 增加到 3, 最后 insert C。
 
-![58.jpg](C:/Users/xf/Desktop/CMU15445/pictures/58.jpg)
+![58.jpg](pictures/58.jpg)
 
-![59.jpg](C:/Users/xf/Desktop/CMU15445/pictures/59-166107314008375.jpg)
+![59.jpg](pictures/59-166107486522575.jpg)
 
-![60.jpg](C:/Users/xf/Desktop/CMU15445/pictures/60-166107314008377.jpg)
+![60.jpg](pictures/60-166107486522577.jpg)
 
-![61.jpg](C:/Users/xf/Desktop/CMU15445/pictures/61-166107314008379.jpg)
+![61.jpg](pictures/61-166107486522579.jpg)
 
-![62.jpg](C:/Users/xf/Desktop/CMU15445/pictures/62-166107314008381.jpg)
+![62.jpg](pictures/62-166107486522581.jpg)
 
-![63.jpg](C:/Users/xf/Desktop/CMU15445/pictures/63-166107314008383.jpg)
+![63.jpg](pictures/63-166107486522583.jpg)
 
 ##### 5.3 Linear Hashing
 
@@ -299,13 +299,13 @@ Linear Hashing 的目的是不在 `resize` 的时候用一个 global latch，来
 
 作法是按照*顺序*去分裂 bucket，而不是分裂特定满的 bucket。顺序实际上只是 bucket id 顺序，有一个 `split pointer` 去跟踪下一个需要分裂的 bucket。而且 Linear Hashing 使用多个 hash function。
 
-![65.jpg](C:/Users/xf/Desktop/CMU15445/pictures/65.jpg)
+![65.jpg](pictures/65.jpg)
 
-![66.jpg](C:/Users/xf/Desktop/CMU15445/pictures/66.jpg)
+![66.jpg](pictures/66.jpg)
 
 ###### 5.3.1 Find 6
 
-![67.jpg](C:/Users/xf/Desktop/CMU15445/pictures/67.jpg)
+![67.jpg](pictures/67.jpg)
 
 ###### 5.3.2 Insert 17 - Overflow
 
@@ -316,31 +316,31 @@ Linear Hashing 的目的是不在 `resize` 的时候用一个 global latch，来
   - hash2(20)=20%8=4→bucket4
 - 分裂完以后，`split pointer` 指向下一个 bucket (bucket id)。
 
-![68.jpg](C:/Users/xf/Desktop/CMU15445/pictures/68.jpg)
+![68.jpg](pictures/68.jpg)
 
-![69.jpg](C:/Users/xf/Desktop/CMU15445/pictures/69-166107314008389.jpg)
+![69.jpg](pictures/69-166107486522589.jpg)
 
-![70.jpg](C:/Users/xf/Desktop/CMU15445/pictures/70.jpg)
+![70.jpg](pictures/70.jpg)
 
-![71.jpg](C:/Users/xf/Desktop/CMU15445/pictures/71.jpg)
+![71.jpg](pictures/71.jpg)
 
 ###### 5.3.3 Find 20
 
 - 先应用 hash1
 - hash1 的结果是 0, 0 这个位置**高于**`split pointer`, 说明 0 这个位置已经分裂过了。需要再应用hash2
 
-![72.jpg](C:/Users/xf/Desktop/CMU15445/pictures/72.jpg)
+![72.jpg](pictures/72.jpg)
 
-![73.jpg](C:/Users/xf/Desktop/CMU15445/pictures/73.jpg)
+![73.jpg](pictures/73.jpg)
 
 ###### 5.3.4 Find 9
 
 - 先应用 hash1
 - hash1 的结果是 1, 1 这个位置**没有高于**`split pointer`, 说明 1 这个位置没有分裂过了。不需要再应用 hash2
 
-![74.jpg](C:/Users/xf/Desktop/CMU15445/pictures/74.jpg)
+![74.jpg](pictures/74.jpg)
 
-![75.jpg](C:/Users/xf/Desktop/CMU15445/pictures/75.jpg)
+![75.jpg](pictures/75.jpg)
 
 > 如果还有overflow的情况，继续向下分离，哈希函数多一个key % 3n
 
@@ -348,21 +348,21 @@ Linear Hashing 的目的是不在 `resize` 的时候用一个 global latch，来
 
 这个例子中，分裂出的 bucket 因为删除的原因变成了空 bucket。这时候可以回收这个 bucket，同时是逆操作之前的分裂步骤，需要将 `split pointer` 向上移动。
 
-![78.jpg](C:/Users/xf/Desktop/CMU15445/pictures/78.jpg)
+![78.jpg](pictures/78.jpg)
 
-![79.jpg](C:/Users/xf/Desktop/CMU15445/pictures/79.jpg)
+![79.jpg](pictures/79.jpg)
 
-![80.jpg](C:/Users/xf/Desktop/CMU15445/pictures/80.jpg)
+![80.jpg](pictures/80.jpg)
 
-![81.jpg](C:/Users/xf/Desktop/CMU15445/pictures/81.jpg)
+![81.jpg](pictures/81.jpg)
 
-![82.jpg](C:/Users/xf/Desktop/CMU15445/pictures/82.jpg)
+![82.jpg](pictures/82.jpg)
 
 ###### 5.3.6 Insert 21
 
 这里也视作一个 overflow。
 
-![83.jpg](C:/Users/xf/Desktop/CMU15445/pictures/83.jpg)
+![83.jpg](pictures/83.jpg)
 
 这里每overflow一次，就按顺序分裂一个bucket，当split point为4的时候，即分裂完一轮了，当前bucket=8
 
@@ -374,6 +374,6 @@ Linear Hashing 的目的是不在 `resize` 的时候用一个 global latch，来
 
 
 
-![84.jpg](C:/Users/xf/Desktop/CMU15445/pictures/84.jpg)
+![84.jpg](pictures/84.jpg)
 
 hash table 一般不做table index，因为只能精确key查询，不能做范围查询。

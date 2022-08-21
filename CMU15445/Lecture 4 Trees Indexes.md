@@ -23,7 +23,7 @@ B+ Tree 是一种自平衡树，它将数据有序地存储，且在 search、se
 
 B+ Tree 可以看作是 BST (Binary Search Tree) 的衍生结构，它的每个节点可以有多个 children，这特别契合 disk-oriented database 的数据存储方式，每个 page 存储一个节点，使得树的结构扁平化，减少获取索引给查询带来的 I/O 成本。其基本结构如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZz8wddPpPJxP1xxb5Y%252F-LZykS00HETGUoHxtn62%252FScreen%20Shot%202019-03-02%20at%2010.14.35%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZz8wddPpPJxP1xxb5Y%252F-LZykS00HETGUoHxtn62%252FScreen%20Shot%202019-03-02%20at%2010.14.35%20PM.jpg)
 
 以 M-way B+tree 为例，它的特点总结如下：
 
@@ -32,7 +32,7 @@ B+ Tree 可以看作是 BST (Binary Search Tree) 的衍生结构，它的每个�
 - 假设每个 inner node 中包含 k 个 keys，那么它必然有 k+1 个 children
 - B+ Tree 的 leaf nodes 通过双向链表串联，从而为 sequential access 提供更高效的支持
 
-![12.jpg](C:/Users/xf/Desktop/CMU15445/pictures/12-166107316953822.jpg)
+![12.jpg](pictures/12-166107491818422.jpg)
 
 - inner node: 由 `node*` 和 `key` 组成
 - leaf node: 由 `value` 和 `key` 组成
@@ -46,13 +46,13 @@ leaf node 的 values 取值在不同数据库中、不同索引优先级中也�
 - Record/Tuple Ids：存储指向最终 tuple 的指针
 - Tuple Data：直接将 tuple data 存在 leaf node 中，但这种方式对于二级索引不适用，因为 DBMS 只能将 tuple 数据存储到一个 index 中，否则数据的存储就会出现冗余，同时带来额外的维护成本。
 
-![18.jpg](C:/Users/xf/Desktop/CMU15445/pictures/18-166107316953824.jpg)
+![18.jpg](pictures/18-166107491818524.jpg)
 
 - `sortd keys` 排列在一块儿。因为 scan 的时候，只是检查 `key`。另外 `key` 的数据类型大小一致，　`values` 大小很可能不一致，如字符串。
 
 ##### 2.2 B-Tree vs. B+Tree
 
-![20.jpg](C:/Users/xf/Desktop/CMU15445/pictures/20-166107316953826.jpg)
+![20.jpg](pictures/20-166107491818526.jpg)
 
 ##### 2.3 B+Tree Operations
 
@@ -60,7 +60,7 @@ Insert、Delete见MySQL黑马课程的讲解
 
 ##### 2.4 B+Tree In Practice
 
-![24.jpg](C:/Users/xf/Desktop/CMU15445/pictures/24-166107316953828.jpg)
+![24.jpg](pictures/24-166107491818528.jpg)
 
 + Fill-Factor 是指 `leaf node的个数 / 所有 node的个数`比值
 + 实际上 B + 树不需要５层以上。
@@ -85,31 +85,31 @@ Selection Conditions 是 B+ tree 的优势，指我们可以搜索 index 对应�
 
 这是 hash table 无法做到的，它只能搜索完整了 search key。
 
-![26.jpg](C:/Users/xf/Desktop/CMU15445/pictures/26-166107316953830.jpg)
+![26.jpg](pictures/26-166107491818530.jpg)
 
 **前缀栗子**
 
 通过前缀我们可以知道我们想要找的 tuple 出现在 index 中的区间，即从小于我们前缀的位置，扫描到大于我们前缀的位置。下面是两个前缀的例子:
 
-![27.jpg](C:/Users/xf/Desktop/CMU15445/pictures/27-166107316953832.jpg)
+![27.jpg](pictures/27-166107491818532.jpg)
 
-![28.jpg](C:/Users/xf/Desktop/CMU15445/pictures/28-166107316953834.jpg)
+![28.jpg](pictures/28-166107491818534.jpg)
 
-![29.jpg](C:/Users/xf/Desktop/CMU15445/pictures/29-166107316953836.jpg)
+![29.jpg](pictures/29-166107491818536.jpg)
 
 **后缀栗子**
 
 我们缺失一个前缀，那就将所有的可能都填入前缀。这样会产生好几个需要扫描的区间，这些区间的个数等于所有前缀可能的个数。如下图 `*` 可以是 A, B, C
 
-![30.jpg](C:/Users/xf/Desktop/CMU15445/pictures/30-166107316953838.jpg)
+![30.jpg](pictures/30-166107491818538.jpg)
 
-![31.jpg](C:/Users/xf/Desktop/CMU15445/pictures/31-166107316953840.jpg)
+![31.jpg](pictures/31-166107491818540.jpg)
 
-![32.jpg](C:/Users/xf/Desktop/CMU15445/pictures/32-166107316953842.jpg)
+![32.jpg](pictures/32-166107491818542.jpg)
 
 ##### 2.8 B+ Tree Design Choices
 
-![33.jpg](C:/Users/xf/Desktop/CMU15445/pictures/33-166107316953844.jpg)
+![33.jpg](pictures/33-166107491818544.jpg)
 
 ###### 2.8.1 Node Size
 
@@ -123,7 +123,7 @@ Selection Conditions 是 B+ tree 的优势，指我们可以搜索 index 对应�
 
 ###### 2.8.2 Merge Threshold
 
-![35.jpg](C:/Users/xf/Desktop/CMU15445/pictures/35-166107316953846.jpg)
+![35.jpg](pictures/35-166107491818546.jpg)
 
 - 如果一个 node 中元素少于 `M/2 - 1`，即没有 half-full, 发生 underflow。我们可以让这个 node 故意保留存在，而不去 merge 它。然后每一段时间，批量处理 B+ tree 中所有这类的 node。
 
@@ -131,7 +131,7 @@ Selection Conditions 是 B+ tree 的优势，指我们可以搜索 index 对应�
 
 B+ Tree 中存储的 key 经常是变长的，通常有四种手段来应对：
 
-![36.jpg](C:/Users/xf/Desktop/CMU15445/pictures/36-166107316953848.jpg)
+![36.jpg](pictures/36-166107491818548.jpg)
 
 - Approach 1: Pointers　太慢 (very rarely used).
 - Approach 2: Variable Length Nodes 不适合 fix size page (also rare).
@@ -142,9 +142,9 @@ B+ Tree 中存储的 key 经常是变长的，通常有四种手段来应对：
 
 将 vaiable lenght key 存在同一个 page
 
-![38.jpg](C:/Users/xf/Desktop/CMU15445/pictures/38-166107316953850.jpg)
+![38.jpg](pictures/38-166107491818550.jpg)
 
-![39.jpg](C:/Users/xf/Desktop/CMU15445/pictures/39-166107316953852.jpg)
+![39.jpg](pictures/39-166107491818552.jpg)
 
 可以在 `sorted key map` 这个区域存一个**首字母**，这样可以减少跳到 `key+values` 区域的次数。不必每一个 `key` 都去看它的全部内容
 
@@ -155,13 +155,13 @@ B+ Tree 中存储的 key 经常是变长的，通常有四种手段来应对：
 1. Duplicate Keys：存储多次相同的 key
 2. Value Lists：每个 key 只出现一次，但同时维护另一个链表，存储 key 对应的多个 values，类似 chained hashing
 
-![40.jpg](C:/Users/xf/Desktop/CMU15445/pictures/40-166107316953856.jpg)
+![40.jpg](pictures/40-166107491818554.jpg)
 
-![41.jpg](C:/Users/xf/Desktop/CMU15445/pictures/41-166107316953854.jpg)
+![41.jpg](pictures/41-166107491818556.jpg)
 
-![42.jpg](C:/Users/xf/Desktop/CMU15445/pictures/42-166107316953858.jpg)
+![42.jpg](pictures/42-166107491818558.jpg)
 
-![43.jpg](C:/Users/xf/Desktop/CMU15445/pictures/43-166107316953860.jpg)
+![43.jpg](pictures/43-166107491818660.jpg)
 
 ##### 2.10 Intra-Node Search
 
@@ -169,7 +169,7 @@ Intra-Node Search 指在 node 中搜索，可以想象成在 page 中那些已�
 
 ###### 2.10.1 Linear
 
-![44.jpg](C:/Users/xf/Desktop/CMU15445/pictures/44-166107316953962.jpg)
+![44.jpg](pictures/44-166107491818662.jpg)
 
 ###### 2.10.2 Binary Search
 
@@ -177,47 +177,47 @@ Intra-Node Search 指在 node 中搜索，可以想象成在 page 中那些已�
 
 Interpolation 指数字的分布如果已知，可以直接猜到想搜的 `key` 的位置。这个属于特例，而且不适用于字符串。
 
-![49.jpg](C:/Users/xf/Desktop/CMU15445/pictures/49-166107316953964.jpg)
+![49.jpg](pictures/49-166107491818664.jpg)
 
 ##### 2.11 Optimization
 
-![50.jpg](C:/Users/xf/Desktop/CMU15445/pictures/50.jpg)
+![50.jpg](pictures/50.jpg)
 
 ###### 2.11.1 Prefix Compression
 
 Prefix Compression 即字符串共有的前缀只需要存储一次，能高效节省出存储的空间。
 
-![51.jpg](C:/Users/xf/Desktop/CMU15445/pictures/51-166107316953967.jpg)
+![51.jpg](pictures/51-166107491818667.jpg)
 
 ###### 2.11.2 Suffix Truncation
 
 我们在最开始说过 leaf node 起到存储信息的作用，inner node 起到 lookup 中导航的作用。对于字符串，inner node 中没有必要保存全部，只需要保存足够的前缀，**保证大于小于的关系和导航的作用**。见下面的例子中，实际上 `a` 和 `l` 也已经足够：
 
-![52.jpg](C:/Users/xf/Desktop/CMU15445/pictures/52-166107316953969.jpg)
+![52.jpg](pictures/52-166107491818669.jpg)
 
-![53.jpg](C:/Users/xf/Desktop/CMU15445/pictures/53-166107316953971.jpg)
+![53.jpg](pictures/53-166107491818671.jpg)
 
 ###### 2.11.3 Bulk Insert
 
 一次次 insert 来获得一个 B+ Tree 很慢。Bulk Insert 是将 keys 先排序，再完成 leaf node, 再根据 leaf node 去完成 inner node。Bulk Insert 让我们能更快去获得一个 B+ Tree：
 
-![54.jpg](C:/Users/xf/Desktop/CMU15445/pictures/54.jpg)
+![54.jpg](pictures/54.jpg)
 
-![55.jpg](C:/Users/xf/Desktop/CMU15445/pictures/55-166107316953974.jpg)
+![55.jpg](pictures/55-166107491818674.jpg)
 
 ###### 2.11.4 Pointer Swizzling
 
 我们每一次从 B+ Tree 中需要一个 page，都需要调用 buffer pool 中的函数，用 `pageid` 获得对应 page 的指针。这种间接 indirection，带来固定的开销。而我们可以节省这一部分，特别在 B+ Tree 的上面几层。因为每次查询都需要上面几层的 page，它们属于 hot page，即它们经常需要有被访问，每一次都找 buffer pool 显得花销更大了。我们完全可以把这些 page 一直留着内存里，然后在 B+Tree 中直接带上它们内容的指针，这样访问它们不需要经过 buffer pool。而这些 hot page 的数量不是很多，完全可以长久留着内存中。
 
-![57.jpg](C:/Users/xf/Desktop/CMU15445/pictures/57-166107316954076.jpg)
+![57.jpg](pictures/57-166107491818676.jpg)
 
-![58.jpg](C:/Users/xf/Desktop/CMU15445/pictures/58-166107316954078.jpg)
+![58.jpg](pictures/58-166107491818678.jpg)
 
-![59.jpg](C:/Users/xf/Desktop/CMU15445/pictures/59-166107316954080.jpg)
+![59.jpg](pictures/59-166107491818680.jpg)
 
 #### 3 Duplicate Keys
 
-![4.jpg](C:/Users/xf/Desktop/CMU15445/pictures/4-166107316954082.jpg)
+![4.jpg](pictures/4-166107491818682.jpg)
 
 处理 Duplicate Keys 有两种方法: Append Record Id, Overflow Leaf Nodes。我们下面会用例子去了解这两种作法
 
@@ -229,21 +229,21 @@ Append Record Id 方法中：我们即存储 Key (可以重复), 也存储 Recor
 
 比如下图中的 `1` 实际在 page 中的表示是 `1 | record id of 1`:
 
-![5.jpg](C:/Users/xf/Desktop/CMU15445/pictures/5.jpg)
+![5.jpg](pictures/5.jpg)
 
 **例子: Insert 6**
 
 树中已经有了一个 `6`, 我们假设它实际上是 `6 | record id x`。另外我们还希望再插入另外一个 `6`, 我们先将这个新的 `6` 存储在 `record id y`，那么它在树中对应的表达应该是 `6 | record id y`, 我们将这个对 插入树中:
 
-![6.jpg](C:/Users/xf/Desktop/CMU15445/pictures/6-166107316954085.jpg)
+![6.jpg](pictures/6-166107491818685.jpg)
 
-![7.jpg](C:/Users/xf/Desktop/CMU15445/pictures/7.jpg)
+![7.jpg](pictures/7.jpg)
 
-![8.jpg](C:/Users/xf/Desktop/CMU15445/pictures/8.jpg)
+![8.jpg](pictures/8.jpg)
 
-![9.jpg](C:/Users/xf/Desktop/CMU15445/pictures/9.jpg)
+![9.jpg](pictures/9.jpg)
 
-![11.jpg](C:/Users/xf/Desktop/CMU15445/pictures/11-166107316954090.jpg)
+![11.jpg](pictures/11-166107491818690.jpg)
 
 ##### 3.2 Overflow Leaf Nodes
 
@@ -251,11 +251,11 @@ Overflow Leaf Nodes 使用另外一种方式，我们不再存储 record id, 而
 
 **Insert 6, 7, 6**
 
-![12.jpg](C:/Users/xf/Desktop/CMU15445/pictures/12-16610731695361.jpg)
+![12.jpg](pictures/12-16610749181681.jpg)
 
-![13.jpg](C:/Users/xf/Desktop/CMU15445/pictures/13-166107316954093.jpg)
+![13.jpg](pictures/13-166107491818693.jpg)
 
-![14.jpg](C:/Users/xf/Desktop/CMU15445/pictures/14-166107316954095.jpg)
+![14.jpg](pictures/14-166107491818695.jpg)
 
 #### 4 Additional Index Usage
 
@@ -288,19 +288,19 @@ CREATE UNIQUE INDEX foo_val2_key ON foo (val2);  /* Unique Constraints */
 
 但是对 `REFERENCES` - foreign key 不会自动建立索引，因为 foreign key 对应的数值不一定是唯一的。比如下面的 `foo.val1` 是另外一个关系 `bar` 的外键 foreign key, 但不会给它新建索引，原因是 `foo.val1` 可以是有重复值的。
 
-![18.jpg](C:/Users/xf/Desktop/CMU15445/pictures/18-16610731695362.jpg)
+![18.jpg](pictures/18-16610749181682.jpg)
 
-![19.jpg](C:/Users/xf/Desktop/CMU15445/pictures/19-166107316954098.jpg)
+![19.jpg](pictures/19-166107491818798.jpg)
 
 `foo.val1` 如果是 `UNIQUE` 的话，那对它建立索引也变得合理了
 
-![20.jpg](C:/Users/xf/Desktop/CMU15445/pictures/20-16610731695363.jpg)
+![20.jpg](pictures/20-16610749181693.jpg)
 
 ##### 4.2 Partial Indexes
 
 Partial Indexes 并不对整个关系中的所有 tuple 建立索引，只是对其中的一部分建立索引。下列例子中，只是对符合 `foo.c = 'WuTang'` 的 tuple 建立索引，因此也只能对这些 tuple 应用索引加速。
 
-![22.jpg](C:/Users/xf/Desktop/CMU15445/pictures/22-1661073169540101.jpg)
+![22.jpg](pictures/22-1661074918187101.jpg)
 
 ##### 4.3 Covering Indexes
 
@@ -308,7 +308,7 @@ Covering Indexes 意味我们可以直接从 index 索引数据结构中获得�
 
 如果 query 所需的所有 column 都存在于 index 中，则 DBMS 甚至不用去获取 tuple 本身即可得到查询结果，如下所示：
 
-![24.jpg](C:/Users/xf/Desktop/CMU15445/pictures/24-16610731695364.jpg)
+![24.jpg](pictures/24-16610749181694.jpg)
 
 ##### 4.4 Index Include Columns
 
@@ -316,9 +316,9 @@ Index Include Columns 在 Covering Indexes 的基础上，再存储了另外的�
 
 **另外的字段**也就是被捎带的。它不会被存储在 inner node, 因为不起到索引的作用。但是被存储在 leaf node 中。
 
-![25.jpg](C:/Users/xf/Desktop/CMU15445/pictures/25-1661073169540104.jpg)
+![25.jpg](pictures/25-1661074918187104.jpg)
 
-![28.jpg](C:/Users/xf/Desktop/CMU15445/pictures/28-16610731695365.jpg)
+![28.jpg](pictures/28-16610749181695.jpg)
 
 ##### 4.5 Functional/Expression Indexes
 
@@ -334,13 +334,13 @@ index 中的 key 不一定是 column 中的原始值，也可以是通过计算�
 
 对于 `login` 内部读取出的 `dow` 数据，针对 `login` 的索引不能帮助我们。
 
-![29.jpg](C:/Users/xf/Desktop/CMU15445/pictures/29-16610731695366.jpg)
+![29.jpg](pictures/29-16610749181696.jpg)
 
 Function/Expression Indexes 在这种情况能帮助我们，它可以针对 `login` 中读取出的 `dow` 建立索引。
 
 另外这种情况，我们上面见到的 Pratial Index 也可以帮助我们。具体情况，具体分析。
 
-![33.jpg](C:/Users/xf/Desktop/CMU15445/pictures/33-16610731695367.jpg)
+![33.jpg](pictures/33-16610749181697.jpg)
 
 #### 5 Trie Index
 
@@ -354,7 +354,7 @@ Key 不会以一个整体的形式直接出现，而是被解体分开 decompone
 
 下图中的最后的红色标志：可以是对应的 Record ID
 
-![36.jpg](C:/Users/xf/Desktop/CMU15445/pictures/36-16610731695368.jpg)
+![36.jpg](pictures/36-16610749181698.jpg)
 
 ##### 5.1 Trie Index vs. B+Tree
 
@@ -373,37 +373,37 @@ Span:= 指的是 key 对应的进制编码
 
 1-bit Span Trie:= 存储 2 进制的 key，每一个 node 的分支数 fan-out 是 2， 即 0 和 1 这两种可能。也叫 2-way Trie。
 
-![38.jpg](C:/Users/xf/Desktop/CMU15445/pictures/38-16610731695369.jpg)
+![38.jpg](pictures/38-16610749181699.jpg)
 
 **栗子**
 
 我们存储 3 个 key: 10, 25, 31 到下面的 1-bit Span Trie 中，具体 key 的二进制表达见下图：
 
-![40.jpg](C:/Users/xf/Desktop/CMU15445/pictures/40-166107316953710.jpg)
+![40.jpg](pictures/40-166107491816910.jpg)
 
-![41.jpg](C:/Users/xf/Desktop/CMU15445/pictures/41-166107316953711.jpg)
+![41.jpg](pictures/41-166107491816911.jpg)
 
-![42.jpg](C:/Users/xf/Desktop/CMU15445/pictures/42-166107316953712.jpg)
+![42.jpg](pictures/42-166107491816912.jpg)
 
-![43.jpg](C:/Users/xf/Desktop/CMU15445/pictures/43-166107316953713.jpg)
+![43.jpg](pictures/43-166107491816913.jpg)
 
-![44.jpg](C:/Users/xf/Desktop/CMU15445/pictures/44-166107316953714.jpg)
+![44.jpg](pictures/44-166107491816914.jpg)
 
-![45.jpg](C:/Users/xf/Desktop/CMU15445/pictures/45-1661073169541116.jpg)
+![45.jpg](pictures/45-1661074918187116.jpg)
 
 ###### 5.2.1 优化1：水平压缩
 
 因为是 1-bit Span Trie，我们**总是**有两种选择: 0 和 1。我们可以不必存储 0 和 1:
 
-![46.jpg](C:/Users/xf/Desktop/CMU15445/pictures/46-1661073169541118.jpg)
+![46.jpg](pictures/46-1661074918187118.jpg)
 
 ###### 5.2.2 优化2：垂直压缩
 
 另外如果当前路径已经确定 **专属于一个 key (single match)** 的话，我们可以在最先可以确定唯一性的地方提前终止，提供指向 tuple 的 record ID。这样能够减少存储量
 
-![47.jpg](C:/Users/xf/Desktop/CMU15445/pictures/47-1661073169541120.jpg)
+![47.jpg](pictures/47-1661074918187120.jpg)
 
-![48.jpg](C:/Users/xf/Desktop/CMU15445/pictures/48-1661073169541122.jpg)
+![48.jpg](pictures/48-1661074918187122.jpg)
 
 ##### 5.3 Insert & Delete
 
@@ -411,23 +411,23 @@ Radix Tree 允许多个字母一个节点，不同于 Trie Tree。
 
 **Insert Hair**
 
-![49.jpg](C:/Users/xf/Desktop/CMU15445/pictures/49-166107316953715.jpg)
+![49.jpg](pictures/49-166107491817015.jpg)
 
-![50.jpg](C:/Users/xf/Desktop/CMU15445/pictures/50-166107316953716.jpg)
+![50.jpg](pictures/50-166107491817016.jpg)
 
 **Delete Hat**
 
-![51.jpg](C:/Users/xf/Desktop/CMU15445/pictures/51-166107316953717.jpg)
+![51.jpg](pictures/51-166107491817017.jpg)
 
-![52.jpg](C:/Users/xf/Desktop/CMU15445/pictures/52-166107316953718.jpg)
+![52.jpg](pictures/52-166107491817018.jpg)
 
 **Delete Have**
 
-![53.jpg](C:/Users/xf/Desktop/CMU15445/pictures/53-166107316953719.jpg)
+![53.jpg](pictures/53-166107491817019.jpg)
 
-![54.jpg](C:/Users/xf/Desktop/CMU15445/pictures/54-166107316953720.jpg)
+![54.jpg](pictures/54-166107491817020.jpg)
 
-![56.jpg](C:/Users/xf/Desktop/CMU15445/pictures/56-1661073169541130.jpg)
+![56.jpg](pictures/56-1661074918187130.jpg)
 
 最后一步中，我们尽可能的 merge 不必要的分岔，这样我们可以更早的去搜速到 `HAIR`
 
@@ -435,11 +435,10 @@ Radix Tree 允许多个字母一个节点，不同于 Trie Tree。
 
 Tree Index 只适合做 point query 和 range query， 而不是适合做 keyword search：
 
-![62.jpg](C:/Users/xf/Desktop/CMU15445/pictures/62-1661073169541132.jpg)
+![62.jpg](pictures/62-1661074918187132.jpg)
 
-![63.jpg](C:/Users/xf/Desktop/CMU15445/pictures/63-1661073169541134.jpg)
+![63.jpg](pictures/63-1661074918187134.jpg)
 
 上面的 SQL 并不正确：会搜索到 `Pavlote` 这样将 `Pavlo` 当做 substring 的词。而不是所有关键字为`Pavlo`的文本
 
-![64.jpg](C:/Users/xf/Desktop/CMU15445/pictures/64.jpg)
-
+![64.jpg](pictures/64.jpg)

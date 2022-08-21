@@ -1,6 +1,6 @@
 ### Lecture 8 Query Execution
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_SKqDH3suePXuli3Z0%252FScreen%20Shot%202019-03-08%20at%208.46.34%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_SKqDH3suePXuli3Z0%252FScreen%20Shot%202019-03-08%20at%208.46.34%20PM.jpg)
 
 如上图所示，通常一个 SQL 会被组织成树状的查询计划，数据从 leaf nodes 流到 root，查询结果在 root 中得出。而本节将讨论在这样一个计划中，如何为这个数据流动过程建模，大纲如下：
 
@@ -24,7 +24,7 @@ DBMS 的 processing model 定义了系统如何执行一个 query plan，目前�
 
 query plan 中的每步 operator 都实现一个 next 函数，每次调用时，operator 返回一个 tuple 或者 null，后者表示数据已经遍历完毕。operator 本身实现一个循环，每次调用其 child operators 的 next 函数，从它们那边获取下一条数据供自己操作，这样整个 query plan 就被从上至下地串联起来，它也称为 Volcano/Pipeline Model：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_SPAXpoLiDtZYjPQzb%252FScreen%20Shot%202019-03-08%20at%209.05.30%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_SPAXpoLiDtZYjPQzb%252FScreen%20Shot%202019-03-08%20at%209.05.30%20PM.jpg)
 
 Iterator 几乎被用在每个 DBMS 中，包括 sqlite、MySQL、PostgreSQL 等等，其它需要注意的是：
 
@@ -37,7 +37,7 @@ Iterator 几乎被用在每个 DBMS 中，包括 sqlite、MySQL、PostgreSQL 等
 
 每个 operator 处理完所有输入后，将所有结果一次性输出，DBMS 会将一些参数传递到 operator 中防止处理过多的数据，这也是一种从上至下的思路，示意如下：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_SQydRFxzDN-0YMd92%252FScreen%20Shot%202019-03-08%20at%209.13.22%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_SQydRFxzDN-0YMd92%252FScreen%20Shot%202019-03-08%20at%209.13.22%20PM.jpg)
 
 materialization model：
 
@@ -54,7 +54,7 @@ Vectorization Model 是 Iterator 与 Materialization Model 折衷的一种模型
 - operator 内部的循环每次也是一批一批 tuples 地处理
 - batch 的大小可以根据需要改变（hardware、query properties）
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_SSpL7OtEU8ncA5L95%252FScreen%20Shot%202019-03-08%20at%209.21.24%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_SSpL7OtEU8ncA5L95%252FScreen%20Shot%202019-03-08%20at%209.21.24%20PM.jpg)
 
 vectorization model 是 OLAP 查询的理想模型：
 
@@ -97,7 +97,7 @@ DBMS 内部需要维护一个 cursor 来追踪之前访问到的位置（page/sl
 
 预先为每个 page 计算好 attribute values 的一些统计值，DBMS 在访问 page 之前先检查 zone map，确认一下是否要继续访问，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_SYzTzVdvka1QB0F-K%252FScreen%20Shot%202019-03-08%20at%209.48.23%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_SYzTzVdvka1QB0F-K%252FScreen%20Shot%202019-03-08%20at%209.48.23%20PM.jpg)
 
 当 DBMS 发现 page 的 Zone Map 中记录 val 的最大值为 400 时，就没有必要访问这个 page。
 
@@ -113,7 +113,7 @@ DBMS 内部需要维护一个 cursor 来追踪之前访问到的位置（page/sl
 
 > 比如a > 100 这个操作后 后面操作不需要a这一列，那就向上传一个Offset就行。
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/webp.webp)
+![img](pictures/webp.webp)
 
 
 
@@ -144,7 +144,7 @@ SELECT * FROM students
    AND country = 'US';
 ```
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_ScefnfeWAkOd66WZf%252FScreen%20Shot%202019-03-08%20at%2010.08.28%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_ScefnfeWAkOd66WZf%252FScreen%20Shot%202019-03-08%20at%2010.08.28%20PM.jpg)
 
 + Scenario #1：使用 dept 的 index 能过滤掉更多的 tuples
 + Scenario #2：使用 age 的 index 能过滤掉更多的 tuples
@@ -161,7 +161,7 @@ Postgres 称 multi-index scan 为 Bitmap Scan。
 
 仍然以上一个 SQL 为例，使用 multi-index scan 的过程如下所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_SeJOQCHNWwzK9pYNo%252FScreen%20Shot%202019-03-08%20at%2010.16.01%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_SeJOQCHNWwzK9pYNo%252FScreen%20Shot%202019-03-08%20at%2010.16.01%20PM.jpg)
 
 其中取集合交集可以使用 bitmaps, hash tables 或者 bloom filters。
 
@@ -169,12 +169,12 @@ Postgres 称 multi-index scan 为 Bitmap Scan。
 
 当使用的不是 clustering index 时，实际上按 index 顺序检索的过程是非常低效的，DBMS 很有可能需要不断地在不同的 pages 之间来回切换。为了解决这个问题，DBMS 通常会先找到所有需要的 tuples，根据它们的 page id 来排序，完毕后再读取 tuples 数据，使得整个过程每个需要访问的 page 只会被访问一次。如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_ShA0GMpjwLpjmIrHN%252FScreen%20Shot%202019-03-08%20at%2010.28.29%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_ShA0GMpjwLpjmIrHN%252FScreen%20Shot%202019-03-08%20at%2010.28.29%20PM.jpg)
 
 ##### 2.4 Expression Evaluation
 
 DBMS 使用 expression tree 来表示一个 WHERE 语句，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_ShOP570xIvRR3bk4N%252FScreen%20Shot%202019-03-08%20at%2010.29.28%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-L_SJmRDBsMOcTdYyKNm%252F-L_ShOP570xIvRR3bk4N%252FScreen%20Shot%202019-03-08%20at%2010.29.28%20PM.jpg)
 
 然后根据 expression tree 完成数据过滤的判断，但这个过程比较低效，很多 DBMS 采用 JIT Compilation 的方式，直接将比较的过程编译成机器码来执行，提高 expression evaluation 的效率。

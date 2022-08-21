@@ -39,7 +39,7 @@ WAL 中的每条日志记录都需要包含一个全局唯一的 log sequence nu
 
 $pageLSN \le flushedLSN$
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M97am2_3_BVde5RcxdD%252F-M97ipBdwkZhgTVBsW_i%252FScreen%20Shot%202020-06-06%20at%204.24.25%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M97am2_3_BVde5RcxdD%252F-M97ipBdwkZhgTVBsW_i%252FScreen%20Shot%202020-06-06%20at%204.24.25%20PM.jpg)
 
 当一个事务修改某 page 中的数据时，也需要更新该 page 的 pageLSN，在将操作日志写进 WAL 后，DBMS 会更新 flushedLSN 为最新写入的 LSN。
 
@@ -62,7 +62,7 @@ $pageLSN \le flushedLSN$
 
 实际上中止事务是 ARIES undo 操作的一种特殊情况：回滚单个事务。过程如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M97xvcl9voXTIZHRbB1%252F-M97ymeDCvhcsipRVZCR%252FScreen%20Shot%202020-06-06%20at%205.34.09%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M97xvcl9voXTIZHRbB1%252F-M97ymeDCvhcsipRVZCR%252FScreen%20Shot%202020-06-06%20at%205.34.09%20PM.jpg)
 
 可以看到，T4 的每条日志都记录着 prevLSN，当 T4 要中止时，DBMS 先向 WAL 中写入一条 ABORT 记录，然后寻着 LSN 与 prevLSN 连接串成的链表，找到之前的操作，倒序回滚，为了防止在回滚过程中再次故障导致部分操作被执行多次，回滚操作也需要写入日志中，等待所有操作回滚完毕后，DBMS 再往 WAL 中写入 TXN-END 记录，意味着所有与这个事务有关的日志都已经写完，不会再出现相关信息。那么，如何记录回滚操作呢？这就是我们马上要介绍的 CLR：
 
@@ -70,7 +70,7 @@ $pageLSN \le flushedLSN$
 
 CLR 记录的是 undo 操作，它除了记录原操作相关的记录，还记录了 undoNext 指针，指向下一个将要被 undo 的 LSN，CLR 本身也是操作记录，因此它也需要像其它操作一样写进 WAL 中，举例如下：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M98-0-qPoaIh_gKYQOg%252F-M98HGVM06SzmgverNb8%252FScreen%20Shot%202020-06-06%20at%206.59.13%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M98-0-qPoaIh_gKYQOg%252F-M98HGVM06SzmgverNb8%252FScreen%20Shot%202020-06-06%20at%206.59.13%20PM.jpg)
 
 值得注意的是：CLR 永远不需要被 undone。
 
@@ -90,7 +90,7 @@ CLR 记录的是 undo 操作，它除了记录原操作相关的记录，还记�
 
 Non-fuzzy 需要停止所有事务，并且等待所有活跃事务执行完毕，我们是否有可能改善这一点？一种做法是：checkpoint 开始后，暂停写事务，阻止写事务获取数据或索引的写锁 (write latch)，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M98-0-qPoaIh_gKYQOg%252F-M98KSCcXCs76z7RZAkz%252FScreen%20Shot%202020-06-06%20at%207.13.13%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M98-0-qPoaIh_gKYQOg%252F-M98KSCcXCs76z7RZAkz%252FScreen%20Shot%202020-06-06%20at%207.13.13%20PM.jpg)
 
 checkpoint 开始时，txn 已经获取了 page#3 的写锁，后者可以继续往 page#3 中写数据，但不能再获取其它 page  的写锁，此时 DBMS 只管扫描一遍 buffer pool 中的 pages，将所有脏页落盘。这时，部分 txn 写入的数据可能会被 checkpoint 进程一起捎带落盘，这时磁盘中的数据 snapshot 处于 inconsistent  的状态。
 
@@ -103,7 +103,7 @@ checkpoint 开始时，txn 已经获取了 page#3 的写锁，后者可以继续
 
 脏页表记录着 buffer pool 中所有包含未提交事务写入数据的页信息，其中还记录着每个脏页的 recLSN（The LSN of the log record that first caused the  page to be dirty）。一个完整的 WAL 举例如下：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M98-0-qPoaIh_gKYQOg%252F-M98NRN-6TSfyXAPXrah%252FScreen%20Shot%202020-06-06%20at%207.26.17%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M98-0-qPoaIh_gKYQOg%252F-M98NRN-6TSfyXAPXrah%252FScreen%20Shot%202020-06-06%20at%207.26.17%20PM.jpg)
 
 在第一个 checkpoint 处：活跃事务有 T2，脏页有 P11 和 P22；在第二个 checkpoint  处，活跃事务有 T3，脏页有 P11 和 P33。
 
@@ -118,7 +118,7 @@ fuzzy checkpoint 允许任何活跃事务在它落盘的过程中执行。既然
 
 当 checkpoint 成功完成时，CHECKPOINT-BEGIN 记录的 LSN 才被写入到数据库的 MasterRecord 中，任何在 checkpoint 之后才启动的事务不会被记录在 CHECKPOINT-END 的 ATT 中，举例如下：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M98P92rG4IJJTKiePCQ%252F-M98QXAvXge6jjS7MYXh%252FScreen%20Shot%202020-06-06%20at%207.39.43%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M98P92rG4IJJTKiePCQ%252F-M98QXAvXge6jjS7MYXh%252FScreen%20Shot%202020-06-06%20at%207.39.43%20PM.jpg)
 
 显然实践中使用的是 fuzzy checkpoint，这也是接下来要介绍的 ARIES 的故障恢复算法的基础。
 
@@ -132,7 +132,7 @@ ARIES 故障恢复一共分三步：
 
 整体流程如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M98RvhiFzm-uXsTLvUb%252F-M98v9nUJ0C6N0jkwkfb%252FScreen%20Shot%202020-06-06%20at%209.57.58%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M98RvhiFzm-uXsTLvUb%252F-M98v9nUJ0C6N0jkwkfb%252FScreen%20Shot%202020-06-06%20at%209.57.58%20PM.jpg)
 
 通过 MasterRecord 找到最后一个 BEGIN-CHECKPOINT 记录，然后分别进行 3 个阶段：
 
@@ -154,7 +154,7 @@ ARIES 故障恢复一共分三步：
 - ATT 告诉 DBMS 在发生故障时，哪些事务是活跃的
 - DPT 告诉 DBMS 在发生故障时，哪些脏数据页可能尚未写入磁盘
 
-![image-20220530213311639](C:/Users/xf/Desktop/CMU15445/pictures/image-20220530213311639.png)
+![image-20220530213311639](pictures/image-20220530213311639.png)
 
 ##### 5.2 Redo Phase
 
@@ -181,46 +181,46 @@ Redo Phase 的目的在于回放历史，重建崩溃那一瞬间的数据库状
 
 ##### 5.4 Example
 
-![image-20220530214519989](C:/Users/xf/Desktop/CMU15445/pictures/image-20220530214519989.png)
+![image-20220530214519989](pictures/image-20220530214519989.png)
 
 我们有一个事务$T_1$对Page5进行了一个修改。事务$T_2$对Page3进行了修改。此时T1 ABORT（中止）
 
-![image-20220530214746531](C:/Users/xf/Desktop/CMU15445/pictures/image-20220530214746531.png)
+![image-20220530214746531](pictures/image-20220530214746531.png)
 
 正常的执行过程中，T1中止了（注意不是崩溃！数据库害能正常运行），咋办？创建一个CLR，我们想从LSN 10开始撤销$T_1$的修改（undo）。
 
-![image-20220530214957060](C:/Users/xf/Desktop/CMU15445/pictures/image-20220530214957060.png)
+![image-20220530214957060](pictures/image-20220530214957060.png)
 
 做了CLR，就可以给$T_1$添加一条TXN-END消息，以此表示这个事务已经完全结束了。
 
-![image-20220530215055652](C:/Users/xf/Desktop/CMU15445/pictures/image-20220530215055652.png)
+![image-20220530215055652](pictures/image-20220530215055652.png)
 
-![image-20220530215111027](C:/Users/xf/Desktop/CMU15445/pictures/image-20220530215111027.png)
+![image-20220530215111027](pictures/image-20220530215111027.png)
 
 $T_3$和$T_2$做了很多修改，然后我们的服务器崩溃了。所以在分析阶段，我们需要回看并将对应的信息填充到ATT和DPT
 
-![image-20220530215519826](C:/Users/xf/Desktop/CMU15445/pictures/image-20220530215519826.png)
+![image-20220530215519826](pictures/image-20220530215519826.png)
 
 
 
 
 
-![image-20220530215712201](C:/Users/xf/Desktop/CMU15445/pictures/image-20220530215712201.png)
+![image-20220530215712201](pictures/image-20220530215712201.png)
 
 我们如果现在需要进行undo操作，那我们就要添加一些新的log条目去反转这些修改
 
-![image-20220530220521951](C:/Users/xf/Desktop/CMU15445/pictures/image-20220530220521951.png)
+![image-20220530220521951](pictures/image-20220530220521951.png)
 
 对事务$T_3$添加了一个clr，这是我们对这个事务所要做的最后一件事，所以再创建一个TXN-END表示结束。此时可以将所有脏页刷出到磁盘，所有修改信息都已经写入到我们的预写日志并已刷出到磁盘。
 
-![image-20220530220638553](C:/Users/xf/Desktop/CMU15445/pictures/image-20220530220638553.png)
+![image-20220530220638553](pictures/image-20220530220638553.png)
 
 如果又崩溃了，我要恢复。
 
-![image-20220530220716984](C:/Users/xf/Desktop/CMU15445/pictures/image-20220530220716984.png)
+![image-20220530220716984](pictures/image-20220530220716984.png)
 
 只有一个$T_2$，需要去撤销它的修改
 
 此时需要从LSN 70开始undo，但现在没有东西给你undo，因为服务器崩溃了，内存没东西，需要先redo之后才有东西undo。
 
-![image-20220530221018566](C:/Users/xf/Desktop/CMU15445/pictures/image-20220530221018566.png)
+![image-20220530221018566](pictures/image-20220530221018566.png)

@@ -2,7 +2,7 @@
 
 数据库在运行时可能遭遇各种故障，这时可能同时有许多正在运行的事务，如果这些事务执行到一半时故障发生了，就可能导致数据库中的数据出现不一致的现象：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8Nx8Os-ZWbRiryCeg-%252F-M8NxzZl0BILZ3E2wPg5%252FScreen%20Shot%202020-05-28%20at%209.48.16%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8Nx8Os-ZWbRiryCeg-%252F-M8NxzZl0BILZ3E2wPg5%252FScreen%20Shot%202020-05-28%20at%209.48.16%20AM.jpg)
 
 这时就需要故障恢复机制来保证数据库的原子性、一致性、持久性。故障恢复机制包含两部分：
 
@@ -64,7 +64,7 @@
 
 DBMS 如何支持 undo/redo 取决于它如何管理 buffer pool。我们可以从两个角度来分析 buffer pool 的管理策略：Steal Policy 和 Force Policy。以下图为例：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8Zc7i4z561af5I9qbw%252F-M8ZfI3kZisrG69LmLGN%252FScreen%20Shot%202020-05-30%20at%204.22.40%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8Zc7i4z561af5I9qbw%252F-M8ZfI3kZisrG69LmLGN%252FScreen%20Shot%202020-05-30%20at%204.22.40%20PM.jpg)
 
 如上图所示，有 2 个并发事务 T1 和 T2，T1 要修改 A 数据，T2 要修改 B 数据，A、B 数据都位于同一块数据页上。在 T2 事务提交时，T1 事务尚未结束，这时 T1 已经修改了 A 数据，此时 DBMS 会允许被修改但未提交的 A 数据进入持久化存储吗？
 
@@ -107,11 +107,11 @@ shadow paging 是 No-Steal + Force 策略的典型代表，它会维护两份数
 
 正在执行的事务都只将修改的数据写到 shadow copy 中，当事务提交时，再原子地把 shadow copy 修改成新的 master。当然，为了提高效率，DBMS 不会复制整个数据库，只需要复制有变动的部分即可，即 copy-on-write。通常，实现 shadow paging 需要将数据页组织成树状结构，如下图所示
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8Zm_qPeURBjGw6eaZZ%252F-M8_tesigjY79XX-V0u6%252FScreen%20Shot%202020-05-30%20at%2010.04.49%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8Zm_qPeURBjGw6eaZZ%252F-M8_tesigjY79XX-V0u6%252FScreen%20Shot%202020-05-30%20at%2010.04.49%20PM.jpg)
 
 左边是内存中的数据结构，由一个根节点指向对应的 page table，其中 page table 对应着磁盘中的相应的数据页。在写事务执行时，会生成一个 shadow page table，并复制需要修改的数据页，在其上完成相应操作。在提交写事务时，DBMS 将 DB Root 的指针指向 shadow page table，并将对应的数据页全部落盘，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8Zm_qPeURBjGw6eaZZ%252F-M8_xPvkWRXyv-3lN8m-%252FScreen%20Shot%202020-05-30%20at%2010.21.30%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8Zm_qPeURBjGw6eaZZ%252F-M8_xPvkWRXyv-3lN8m-%252FScreen%20Shot%202020-05-30%20at%2010.21.30%20PM.jpg)
 
 在事务提交前，任何被修改的数据都不会被持久化到数据库；在事务提交后，所有被修改的数据都会被持久化到数据库。在 shadow paging 下回滚、恢复数据都很容易：
 
@@ -152,7 +152,7 @@ WAL 指的是 DBMS 除了维持正常的数据文件外，额外地维护一个�
 
 每次事务提交时，DBMS 都必须将日志记录落盘，由于落盘的操纵对于内存操作来说用时较长，因此可以利用 group commit 来批量刷盘从而均摊落盘成本
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8a6cXf31WOpeeldsK4%252F-M8aG_ed31yNJ7G5tmJs%252FScreen%20Shot%202020-05-30%20at%2011.49.33%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8a6cXf31WOpeeldsK4%252F-M8aG_ed31yNJ7G5tmJs%252FScreen%20Shot%202020-05-30%20at%2011.49.33%20PM.jpg)
 
 当满了就刷出去，如果两个事务都停滞不产生日志记录，就隔一段时间再刷出了。
 
@@ -172,7 +172,7 @@ logical logging 的特点总结如下：
 
 这种方案不会像 physical logging 一样记录 xx page xx 偏移量上的数据发生 xx 改动，而是记录 xx page 上的 id 为 xx 的数据发生 xx 改动，前者需要关心 data page 在磁盘上的布局，后者则无需关心，举例如下：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8a6cXf31WOpeeldsK4%252F-M8aL31bGNG0f5vvD4vM%252FScreen%20Shot%202020-05-31%20at%2012.09.10%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8a6cXf31WOpeeldsK4%252F-M8aL31bGNG0f5vvD4vM%252FScreen%20Shot%202020-05-31%20at%2012.09.10%20AM.jpg)
 
 physiological logging 也是当下最流行的方案。
 
@@ -180,7 +180,7 @@ physiological logging 也是当下最流行的方案。
 
 如果我们放任 WAL 增长，它可以随着新的操作执行而无限增长。如此这般，在故障恢复时，DBMS 需要读取更多的日志，执行更多的恢复和回滚操作。为了避免这种情况出现，DBMS 需要周期性地记录 checkpoint，即将所有日志记录和数据页都持久化到存储设备中，然后在日志中写入一条 `<CHECKPOINT>` 记录，举例如下：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8a6cXf31WOpeeldsK4%252F-M8aMI0UIq43VsGySQzb%252FScreen%20Shot%202020-05-31%20at%2012.14.34%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-M8a6cXf31WOpeeldsK4%252F-M8aMI0UIq43VsGySQzb%252FScreen%20Shot%202020-05-31%20at%2012.14.34%20AM.jpg)
 
-![image-20220529233125612](C:/Users/xf/Desktop/CMU15445/pictures/image-20220529233125612.png)
+![image-20220529233125612](pictures/image-20220529233125612.png)
 

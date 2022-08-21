@@ -4,7 +4,7 @@
 
 以课程伊始时的 table 为例，通过将 Artist 与 Album 之间的多对多关系拆成 Artist, ArtistAlbum 以及 Album 三个 tables 来规范化数据，使得数据存储的冗余减少：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La5GNw04x8dghkKNnFu%252F-La5Hn2OiSCiZACMwgAE%252FScreen%20Shot%202019-03-16%20at%207.37.39%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La5GNw04x8dghkKNnFu%252F-La5Hn2OiSCiZACMwgAE%252FScreen%20Shot%202019-03-16%20at%207.37.39%20PM.jpg)
 
 查询时我们就需要通过 Join 来重建 Artist 与 Album 的完整关系数据。
 
@@ -17,7 +17,7 @@
 
 逻辑上 Join 的操作的结果是：对任意一个 tuple $r \in R$和任意一个在 Join Attributes 上对应的 tuple $s \in S$ ，将 r 和 s 串联成一个新的 tuple：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La5GNw04x8dghkKNnFu%252F-La5Jfak-pG08NtJc37P%252FScreen%20Shot%202019-03-16%20at%207.45.54%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La5GNw04x8dghkKNnFu%252F-La5Jfak-pG08NtJc37P%252FScreen%20Shot%202019-03-16%20at%207.45.54%20PM.jpg)
 
 Join 操作的结果 tuple 中除了 Join Attributes 之外的信息与多个因素相关：
 
@@ -34,9 +34,9 @@ Join 操作的结果 tuple 中除了 Join Attributes 之外的信息与多个因
 
 > 这里的优点和缺点来自一个原因：复制数据之后，产生的是无关联的副本，但是**复制的时间和空间开销较大。**
 
-![6.jpg](C:/Users/xf/Desktop/CMU15445/pictures/6-16610732964153.jpg)
+![6.jpg](pictures/6-16610750077793.jpg)
 
-![7.jpg](C:/Users/xf/Desktop/CMU15445/pictures/7-16610732964155.jpg)
+![7.jpg](pictures/7-16610750077795.jpg)
 
 ##### 1.2 Record IDs
 
@@ -44,11 +44,11 @@ Join 操作的结果 tuple 中除了 Join Attributes 之外的信息与多个因
 >
 > Record IDs 相当于一个硬盘上的位置
 
-![9.jpg](C:/Users/xf/Desktop/CMU15445/pictures/9-16610732964157.jpg)
+![9.jpg](pictures/9-16610750077797.jpg)
 
-![10.jpg](C:/Users/xf/Desktop/CMU15445/pictures/10-16610732964159.jpg)
+![10.jpg](pictures/10-16610750077799.jpg)
 
-![11.jpg](C:/Users/xf/Desktop/CMU15445/pictures/11-166107329641511.jpg)
+![11.jpg](pictures/11-166107500777911.jpg)
 
 上述操作比较适合列式存储，这种优化方式叫做延迟物化。
 
@@ -56,7 +56,7 @@ Join 操作的结果 tuple 中除了 Join Attributes 之外的信息与多个因
 
 要理解延迟物化(Late Materialization), 首先解释一下什么是物化：为了能够把底层存储格式(面向Column的), 跟用户查询表达的意思(Row)对应上，在一个查询的生命周期的某个时间点，一定要把数据转换成Row的形式，这在Column-Store里面被称为物化(Materization)。
 
-![640?wx_fmt=jpeg](C:/Users/xf/Desktop/CMU15445/pictures/0556f307fc3fdd2ba415fe00404986df.jpeg)
+![640?wx_fmt=jpeg](pictures/0556f307fc3fdd2ba415fe00404986df.jpeg)
 
 下面看个例子, 比如下面的查询：
 
@@ -66,11 +66,11 @@ SELECT nameFROM personWHERE id > 10 and age > 20
 
 一般(Naive)的做法是从文件系统读出三列的数据，马上物化成一行行的person数据，然后应用两个过滤条件: `id > 10` 和 `age > 20` , 过滤完了之后从数据里面抽出 `name` 字段，作为最后的结果，大致转换过程如下图:
 
-![640?wx_fmt=jpeg](C:/Users/xf/Desktop/CMU15445/pictures/41d3317c1bbece59db28197cc47a646f.jpeg)
+![640?wx_fmt=jpeg](pictures/41d3317c1bbece59db28197cc47a646f.jpeg)
 
 而延迟物化的做法则会先不拼出行式数据，直接在Column数据上分别应用两个过滤条件，从而得到两个满足过滤条件的bitmap, 然后再把两个bitmap做位与(bitwise AND)的操作得到同时满足两个条件的所有的bitmap，因为最后用户需要的只是 `name` 字段而已，因此下一步我们拿着这些`position` 对 `name` 字段的数据进行过滤就得到了最终的结果。如下图:
 
-![640?wx_fmt=jpeg](C:/Users/xf/Desktop/CMU15445/pictures/0a1a83bbf0b9aa4efa2fcde4edf44558.jpeg)
+![640?wx_fmt=jpeg](pictures/0a1a83bbf0b9aa4efa2fcde4edf44558.jpeg)
 
 #### 2 I/O Cost Analysis
 
@@ -97,11 +97,11 @@ SELECT nameFROM personWHERE id > 10 and age > 20
 
 ##### 3.1 Simple Nested Loop Join
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La89KlvadrrXRPkyto_%252F-La89XKahCxHQe6jJVj7%252FScreen%20Shot%202019-03-17%20at%209.00.27%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La89KlvadrrXRPkyto_%252F-La89XKahCxHQe6jJVj7%252FScreen%20Shot%202019-03-17%20at%209.00.27%20AM.jpg)
 
 对 R 中的每个 tuple，都全表扫描一次 S，是一种暴力解法，它的成本为：
 
-<img src="C:/Users/xf/Desktop/CMU15445/pictures/image-20220515162026673.png" alt="image-20220515162026673" style="zoom:25%;" />
+<img src="pictures/image-20220515162026673.png" alt="image-20220515162026673" style="zoom:25%;" />
 
 ***举例：***
 
@@ -127,7 +127,7 @@ $N + (n\times M) = 500 + (40000 \times 1000) = 40,000,500 \ I/Os$
 - **Block 这里指 Page**
 - Block NLJ 对当前的 Page 进行了**最大利用**。对每一个左边的每个 page 都需要连接右侧全部的 N 个 page。
 
-![18.jpg](C:/Users/xf/Desktop/CMU15445/pictures/18-166107329641517.jpg)
+![18.jpg](pictures/18-166107500777917.jpg)
 
 **举例：**
 
@@ -158,7 +158,7 @@ $M + (ceil(M / (B-2)) \times N)$
 
 之前的两种 Nested Loop Join 速度慢的原因在于，需要对 Inner Table 作多次全表扫描，若 Inner Table 在 Join Attributes 上有索引或者临时建一个索引 (只需全表扫描一次)：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La89KlvadrrXRPkyto_%252F-La8He_2aMDqo6wagz7O%252FScreen%20Shot%202019-03-17%20at%209.35.57%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La89KlvadrrXRPkyto_%252F-La8He_2aMDqo6wagz7O%252FScreen%20Shot%202019-03-17%20at%209.35.57%20AM.jpg)
 
 此时 Join 的成本为：
 
@@ -187,35 +187,35 @@ Sort-Merge Join 顾名思义，分为两个阶段：
 
 算法如下：
 
-![30.jpg](C:/Users/xf/Desktop/CMU15445/pictures/30-166107329641520.jpg)
+![30.jpg](pictures/30-166107500777920.jpg)
 
 **例子：**
 
-![31.jpg](C:/Users/xf/Desktop/CMU15445/pictures/31-166107329641522.jpg)
+![31.jpg](pictures/31-166107500777922.jpg)
 
 **Phase #1 - Sort**
 
-![32.jpg](C:/Users/xf/Desktop/CMU15445/pictures/32-166107329641524.jpg)
+![32.jpg](pictures/32-166107500777924.jpg)
 
 **Phase #2 - Merge**
 
-![33.jpg](C:/Users/xf/Desktop/CMU15445/pictures/33-166107329641526.jpg)
+![33.jpg](pictures/33-166107500777926.jpg)
 
-![34.jpg](C:/Users/xf/Desktop/CMU15445/pictures/34-166107329641628.jpg)
+![34.jpg](pictures/34-166107500777928.jpg)
 
-![35.jpg](C:/Users/xf/Desktop/CMU15445/pictures/35-166107329641630.jpg)
+![35.jpg](pictures/35-166107500777930.jpg)
 
-![36.jpg](C:/Users/xf/Desktop/CMU15445/pictures/36-166107329641632.jpg)
+![36.jpg](pictures/36-166107500777932.jpg)
 
-![37.jpg](C:/Users/xf/Desktop/CMU15445/pictures/37-166107329641634.jpg)
+![37.jpg](pictures/37-166107500777934.jpg)
 
-![38.jpg](C:/Users/xf/Desktop/CMU15445/pictures/38-166107329641636.jpg)
+![38.jpg](pictures/38-166107500777936.jpg)
 
-![39.jpg](C:/Users/xf/Desktop/CMU15445/pictures/39-166107329641638.jpg)
+![39.jpg](pictures/39-166107500777938.jpg)
 
 **注意这里需要回溯**
 
-![40.jpg](C:/Users/xf/Desktop/CMU15445/pictures/40-166107329641640.jpg)
+![40.jpg](pictures/40-166107500777940.jpg)
 
 如果左侧 relation 出现数值相同的情况，右侧 relation 的 cursor 必须要回去 backtracking 到相同的数值。
 
@@ -264,7 +264,7 @@ Sort-Merge Join 适用于：
 - Phase #2: Probe
   - 扫描 Inner Table，使用 hash function $h_1$ 获取每个 tuple 在 T 中的位置，在该位置上找到配对成功的 tuple(s)
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La89KlvadrrXRPkyto_%252F-La8OluaWQMtpd0-wPPn%252FScreen%20Shot%202019-03-17%20at%2010.07.03%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La89KlvadrrXRPkyto_%252F-La8OluaWQMtpd0-wPPn%252FScreen%20Shot%202019-03-17%20at%2010.07.03%20AM.jpg)
 
 这里明确 T 的定义：
 
@@ -284,11 +284,11 @@ Sort-Merge Join 适用于：
 - Phase #2: Prob
   - 对两个 tables 的每一对 partition 分别进行 Join
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La89KlvadrrXRPkyto_%252F-La8RpW98dA7RvGFMYhB%252FScreen%20Shot%202019-03-17%20at%2010.20.23%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La89KlvadrrXRPkyto_%252F-La8RpW98dA7RvGFMYhB%252FScreen%20Shot%202019-03-17%20at%2010.20.23%20AM.jpg)
 
 如果每个 partition 仍然无法放入内存中，则可以递归地使用不同的 hash function 进行 partition，即 recursive partitioning：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La89KlvadrrXRPkyto_%252F-La8SCV9GrYuISXphOsN%252FScreen%20Shot%202019-03-17%20at%2010.22.02%20AM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-La89KlvadrrXRPkyto_%252F-La8SCV9GrYuISXphOsN%252FScreen%20Shot%202019-03-17%20at%2010.22.02%20AM.jpg)
 
 成本分析：
 

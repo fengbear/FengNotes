@@ -38,7 +38,7 @@ DBMS 的 process model 定义了**多用户数据库系统处理并发请求的�
 
 ##### 2.1 Approach #1: Process per DBMS Worker
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7hyGl-jcSDNubDI7m%252FScreen%20Shot%202019-03-29%20at%205.11.11%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7hyGl-jcSDNubDI7m%252FScreen%20Shot%202019-03-29%20at%205.11.11%20PM.jpg)
 
 用户请求经过 Dispatcher 后，由 Dispatcher 分配相应的 Worker 完成查询并返回结果，每个 worker 都是单独的 OS Process
 
@@ -50,7 +50,7 @@ DBMS 的 process model 定义了**多用户数据库系统处理并发请求的�
 
 ##### 2.2 Approach #2: Process Pool
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7iJykMh_0MuAqi6IY%252FScreen%20Shot%202019-03-29%20at%205.12.54%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7iJykMh_0MuAqi6IY%252FScreen%20Shot%202019-03-29%20at%205.12.54%20PM.jpg)
 
 用户请求经过 Dispatcher 后，由 Dispatcher 分配相应的 Worker 完成查询，将结果返回 Dispatcher，后者再返回给用户。每个 Worker 可以使用 Worker Pool 中任意空闲的 Process(es)：
 
@@ -62,7 +62,7 @@ DBMS 的 process model 定义了**多用户数据库系统处理并发请求的�
 
 ##### 2.3 Approach #3: Thread per DBMS Worker
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7khgNXYehz4MMaQQe%252FScreen%20Shot%202019-03-29%20at%205.23.18%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7khgNXYehz4MMaQQe%252FScreen%20Shot%202019-03-29%20at%205.23.18%20PM.jpg)
 
 整个 DBMS 由一个 Process 和多个 Worker Threads 构成：
 
@@ -94,13 +94,13 @@ DBMS 的 process model 定义了**多用户数据库系统处理并发请求的�
 
 将 data 拆解成多个子集，然后对这些子集并行地执行相应的 operator，DBMS 通过将 exchange operator 引入查询计划，来合并子集处理的结果，过程类似 MapReduce，举例如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7pmgH8Bbl0FDfeg-t%252FScreen%20Shot%202019-03-29%20at%205.45.27%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7pmgH8Bbl0FDfeg-t%252FScreen%20Shot%202019-03-29%20at%205.45.27%20PM.jpg)
 
 **Inter-operator Parallelism (Vertical)**
 
 将 operators 串成 pipeline，数据从上游流向下游，一般无需等待前一步操作执行完毕，也称为 pipelined parallelism，举例如下：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7qVyQj_6X8kIq5wvl%252FScreen%20Shot%202019-03-29%20at%205.48.33%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7qVyQj_6X8kIq5wvl%252FScreen%20Shot%202019-03-29%20at%205.48.33%20PM.jpg)
 
 这种方式在传统 DBMSs 中并不常用，因为许多 operators，如 join， 必须扫描所有 tuples 之后才能得到结果。它更多地被用在流处理系统，如 Spark、Nifi、Kafka,、Storm、Flink、Heron。
 
@@ -121,9 +121,9 @@ I/O Parallelism 通过将 DBMS 安装在多个存储设备上来实现：
 
 通过 OS 或硬件配置将 DBMS 的数据文件存储到多个存储设备上，整个过程对 DBMS 透明，如使用 RAID。
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7sZ5Szi6X-J-2rBe_%252FScreen%20Shot%202019-03-29%20at%205.57.36%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7sZ5Szi6X-J-2rBe_%252FScreen%20Shot%202019-03-29%20at%205.57.36%20PM.jpg)
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7sck2Mq7ER2szQme9%252FScreen%20Shot%202019-03-29%20at%205.57.56%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7sck2Mq7ER2szQme9%252FScreen%20Shot%202019-03-29%20at%205.57.56%20PM.jpg)
 
 一些 DBMS 甚至允许用户为单个 database 指定 disk location。
 
@@ -144,7 +144,7 @@ CREATE TABLE foo (
 );
 ```
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7uNbHaGIf_sJCB0N4%252FScreen%20Shot%202019-03-29%20at%206.05.34%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7uNbHaGIf_sJCB0N4%252FScreen%20Shot%202019-03-29%20at%206.05.34%20PM.jpg)
 
 ### Horizontal Partitioning
 
@@ -154,5 +154,5 @@ CREATE TABLE foo (
 - Range Partitioning
 - Predicate Partitioning
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7ut0CqIzKxbJeXZzj%252FScreen%20Shot%202019-03-29%20at%206.07.21%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lb7cffxSarf_BaUfjPn%252F-Lb7ut0CqIzKxbJeXZzj%252FScreen%20Shot%202019-03-29%20at%206.07.21%20PM.jpg)
 

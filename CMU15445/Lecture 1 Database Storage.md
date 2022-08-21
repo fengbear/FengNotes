@@ -6,7 +6,7 @@
 
 我们关注是面向磁盘的数据库系统（disk-oriented DBMS），这意味着每次进行查询时数据都不在内存中，我们需要从磁盘去获取数据，这就对数据库的设计和机制有了一定的要求：如何防止数据丢失、保存无效、错误数据等。这就涉及到易失性存储（Volatile）和非易失性存储（Non-Volatile）的区别。
 
-![preview](C:/Users/xf/Desktop/CMU15445/pictures/v2-8b15c40dd72bc9ae0370377756a429f4_r.jpg)
+![preview](pictures/v2-8b15c40dd72bc9ae0370377756a429f4_r.jpg)
 
 在本门课程中，内存指代DRAM，磁盘指代SSD、HDD或者网络存储（例如云存储）等内容。实际上，现在还存在一种叫非易失性内存的玩意，目前还没有被广泛使用，但是已经存在了。
 
@@ -22,21 +22,21 @@
 
 假设我们刚刚打开数据库，此时数据库的 Buffer Pool 是空的：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/12.jpg)
+![img](pictures/12.jpg)
 
 Execution Engine调用了buffer pool manager 的一个函数: `getpage(int : 2)`, 为了得到第二个 page。目前我们只将Execution Engine 视作一个需要 page 的数据库高层的部分，需要 buffer pool manager提供的服务：
 
-![13.jpg](C:/Users/xf/Desktop/CMU15445/pictures/13.jpg)
+![13.jpg](pictures/13.jpg)
 
 这时候数据库需要从硬盘中读 **directory page** 到内存，directory page 是 buffer pool 的 header,　记录了每一个 page 对应的文件。
 
 当 directory page 进入内存，buffer pool manager 从它上面读到了 page 2 对应的文件位置：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/14.jpg)
+![img](pictures/14.jpg)
 
 接下来 page 2 被读到内存中，Execution Engine 得到它想要的东西：一个 page2 内容在内存的指针。
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/16.jpg)
+![img](pictures/16.jpg)
 
 ##### 1.2 Why not use the OS?
 
@@ -49,7 +49,7 @@ Execution Engine调用了buffer pool manager 的一个函数: `getpage(int : 2)`
 
 ###### 1.2.1 Demo
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/23.jpg)
+![img](pictures/23.jpg)
 
 上面的 demo 的意思是，当我们在物理内存已满的情况下，继续需要 page2，这时候会出现一个 page fault (页缺失)，我们需要从物理内存中去掉一个 page，来给 page2 提供空间。当然 demo 最开始的时候，我们需要 page1 的时候，和我们需要 page3 的时候，它们都不再物理内存中，这时候我们也遇到了 page Fault。
 
@@ -59,7 +59,7 @@ Execution Engine调用了buffer pool manager 的一个函数: `getpage(int : 2)`
 
 由于系统假设数据全存储在磁盘上，因此DBMS的任务就是从磁盘到内存之间来回移动数据，因为系统不能直接对磁盘进行操作。一个数据库系统的目标就是让**上层应用感觉所有的操作都在内存上，即使内存总是远远小于磁盘的**。磁盘的读写会带来很大的开销，因此一个好的设计应该让DBMS在等待磁盘的数据时能够处理其他查询（对内存）。
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/v2-b7fb0e6b66470f742f35eca57345909a_1440w.jpg)
+![img](pictures/v2-b7fb0e6b66470f742f35eca57345909a_1440w.jpg)
 
 上图是面向磁盘的数据库管理系统示意图。数据库中的文件被组织成页（Page），第一页是目录页（Directory，**当然这里其实不知道目录页是啥**）。为了对数据进行操作，DBMS需要从磁盘取出数据放到内存中，那么内存中就有一个缓冲池（Buffer Pool）来管理磁盘和内存之间数据的来回移动。同时DBMS还提供了一个执行引擎来进行查询。引擎向缓冲池请求特定page，缓冲池负责将请求的page放到内存供引擎访问。那么，我们的缓冲池管理器（Buffer Pool Manager）就需要确保执行引擎访问内存时不会缺页。
 
@@ -102,7 +102,7 @@ Execution Engine调用了buffer pool manager 的一个函数: `getpage(int : 2)`
 
 当然，如果我们的数据库只需要读取数据的话，使用mmap实际上是可行的，但是问题在于我们并不仅仅需要读。如果有写操作，**那么操作系统是不知道哪些page需要在其他page执行前从内存刷到磁盘上的，这将会与日志与并发控制的实现有关。**
 
-![preview](C:/Users/xf/Desktop/CMU15445/pictures/v2-9409d18f98d7dc539a169c02a4d6659b_r.jpg)
+![preview](pictures/v2-9409d18f98d7dc539a169c02a4d6659b_r.jpg)
 
 当然，就如上图所示，我们也可以通过一些指令来指导操作系统进行page的替换（madvise, mlock, msync），也还是有数据库完全使用或者部分使用mmap，例如早期的MongoDB（但是后来MongoDB花大价钱收购了WiredTiger作为其默认的存储引擎，可以看到mmap还是存在一些问题的）。但总的来说，让DBMS自己管理page始终会是一个更加高效且安全的做法，这可以更好的支持：
 
@@ -125,7 +125,7 @@ DBMS 通常将自己的所有数据作为一个或多个文件存储在磁盘中
 
 storage manager 能够理解解释对应的数据库文件，将数据库文件表示成一个 page 的集合。它也记录下 page 的读与写操作，另外 page 上剩下的存储空间大小也会被记录下来。
 
-![30.jpg](C:/Users/xf/Desktop/CMU15445/pictures/30.jpg)
+![30.jpg](pictures/30.jpg)
 
 ###### 2.1.2 Database Pages
 
@@ -150,7 +150,7 @@ OS 的文件系统通常将文件切分成 pages 进行管理，DBMS 也不例�
 >   - 因此每一个 page id 可以对应上某些数据，这些数据的大小是一个 page 的大小
 >   - 在数据库的高层组成成分中 (比如 execution engine)，都需要将对应的 page id 当做参数，从 buffer pool manager 中获得对应的 page (和数据)。
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/33.jpg)
+![img](pictures/33.jpg)
 
 上图说，我们有多种途径去对硬盘上的 page 位置进行管理，heap file 是其中的一种途径，我们重点看一下 heap file。
 
@@ -167,7 +167,7 @@ Header page 有两个指针：
 
 如果我们想寻找某一个特定的 page，我们只能低效地遍历扫描。总体上 linked list 不是一个好主意。
 
-[![36.jpg](C:/Users/xf/Desktop/CMU15445/pictures/36.jpg)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/36.jpg)
+[![36.jpg](pictures/36.jpg)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/36.jpg)
 
 **Page Directory**
 
@@ -175,13 +175,13 @@ page directory 是一种比较常见的方式，　它提供了一种映射：`p
 
 另外我们需要同步 (sync) page directory 上的信息和实际上的 page 信息。这需要我们在每次更改 page 的时候，同时也需要更改 page directory 上的信息。
 
-[![37.jpg](C:/Users/xf/Desktop/CMU15445/pictures/37.jpg)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/37.jpg)
+[![37.jpg](pictures/37.jpg)](https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/37.jpg)
 
 ##### 2.2 Page Layout
 
 每个 page 被分为两个部分：header 和 data，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYebNTlaoNsGvaj71_I%252F-LYebQTLUy5MwoUGLw-9%252FScreen%20Shot%202019-02-14%20at%201.29.06%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYebNTlaoNsGvaj71_I%252F-LYebQTLUy5MwoUGLw-9%252FScreen%20Shot%202019-02-14%20at%201.29.06%20PM.jpg)
 
 header 中通常包含以下信息：
 
@@ -191,7 +191,7 @@ header 中通常包含以下信息：
 - Transaction Visibility
 - Compression Information
 
-![39.jpg](C:/Users/xf/Desktop/CMU15445/pictures/39.jpg)
+![39.jpg](pictures/39.jpg)
 
 data 中记录着真正存储的数据，数据记录的形式主要有两种：
 
@@ -204,7 +204,7 @@ data 中记录着真正存储的数据，数据记录的形式主要有两种：
 
 在 header 中记录 tuple 的个数，然后不断的往下 append 即可，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYebNTlaoNsGvaj71_I%252F-LYebUJNjx5lPE-GdhLA%252FScreen%20Shot%202019-02-14%20at%201.42.13%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYebNTlaoNsGvaj71_I%252F-LYebUJNjx5lPE-GdhLA%252FScreen%20Shot%202019-02-14%20at%201.42.13%20PM.jpg)
 
 这种方法有明显的两个缺点：
 
@@ -217,9 +217,9 @@ data 中记录着真正存储的数据，数据记录的形式主要有两种：
 
 如下图所示，header 中的 slot array 记录每个 slot 的信息，如大小、位移等 
 
-![47.jpg](C:/Users/xf/Desktop/CMU15445/pictures/47.jpg)
+![47.jpg](pictures/47.jpg)
 
-![48.jpg](C:/Users/xf/Desktop/CMU15445/pictures/48.jpg)
+![48.jpg](pictures/48.jpg)
 
 对于 slotted pages，如果我们删除 tuple3 与更改 header 后，　我们可以有两种选择：
 
@@ -236,13 +236,13 @@ data 中记录着真正存储的数据，数据记录的形式主要有两种：
 
 og-structured 只存储日志记录，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYebNTlaoNsGvaj71_I%252F-LYebc_D1CpzNH1QhiNS%252FScreen%20Shot%202019-02-14%20at%201.55.58%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYebNTlaoNsGvaj71_I%252F-LYebc_D1CpzNH1QhiNS%252FScreen%20Shot%202019-02-14%20at%201.55.58%20PM.jpg)
 
 每次记录新的操作日志即可，增删改的操作都很快，但有得必有失，在查询场景下，就需要遍历 page 信息来生成数据才能返回查询结果。
 
 为了加快查询效率，通常会对操作日志在记录 id 上建立索引，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYebNTlaoNsGvaj71_I%252F-LYebgBrjCRjYP4bXt1a%252FScreen%20Shot%202019-02-14%20at%201.59.39%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYebNTlaoNsGvaj71_I%252F-LYebgBrjCRjYP4bXt1a%252FScreen%20Shot%202019-02-14%20at%201.59.39%20PM.jpg)
 
 优点：
 
@@ -266,19 +266,19 @@ og-structured 只存储日志记录，如下图所示：
 
 因此不难猜到，tuple 中还可以分为 header 和 data 两部分，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYg_v6jCZnflR2OgqQ1%252F-LYgb3nbBH2gBw-5o265%252FScreen%20Shot%202019-02-14%20at%2011.24.43%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYg_v6jCZnflR2OgqQ1%252F-LYgb3nbBH2gBw-5o265%252FScreen%20Shot%202019-02-14%20at%2011.24.43%20PM.jpg)
 
 通常 DBMS 会按照你在建表时候指定的顺序（并不绝对）来存储 tuple 的 attribute data，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYg_v6jCZnflR2OgqQ1%252F-LYgbSRuJhUrF1Aq9A8j%252FScreen%20Shot%202019-02-14%20at%2011.26.11%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYg_v6jCZnflR2OgqQ1%252F-LYgbSRuJhUrF1Aq9A8j%252FScreen%20Shot%202019-02-14%20at%2011.26.11%20PM.jpg)
 
 有时候，为了提高操作性能，DBMS 会在存储层面上将有关联的表的数据预先 join 起来，称作 denormalize，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYg_v6jCZnflR2OgqQ1%252F-LYgc28CII_KL-Kf0GAd%252FScreen%20Shot%202019-02-14%20at%2011.28.48%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYg_v6jCZnflR2OgqQ1%252F-LYgc28CII_KL-Kf0GAd%252FScreen%20Shot%202019-02-14%20at%2011.28.48%20PM.jpg)
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYg_v6jCZnflR2OgqQ1%252F-LYgc6IfM4tZC2Zln-uU%252FScreen%20Shot%202019-02-14%20at%2011.28.54%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYg_v6jCZnflR2OgqQ1%252F-LYgc6IfM4tZC2Zln-uU%252FScreen%20Shot%202019-02-14%20at%2011.28.54%20PM.jpg)
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYg_v6jCZnflR2OgqQ1%252F-LYgcGKlBaw_2AKf4XWi%252FScreen%20Shot%202019-02-14%20at%2011.29.00%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LYg_v6jCZnflR2OgqQ1%252F-LYgcGKlBaw_2AKf4XWi%252FScreen%20Shot%202019-02-14%20at%2011.29.00%20PM.jpg)
 
 pre-join of table foo and bar
 
@@ -361,7 +361,7 @@ typedef struct {
 
 ###### 3.1.3 Large Values
 
-![21.jpg](C:/Users/xf/Desktop/CMU15445/pictures/21.jpg)
+![21.jpg](pictures/21.jpg)
 
 - 如果 `c` 很大，甚至超过了一个 page 的大小。比如 `c` 是一个 tuple 中一个很长的 `VARCHAR` 字段。String 总是数据库中最麻烦的。对于这个超过一个 page 大小的 `c`，我们可以把它额外存储在一个 *overflow page* 上，这时上图中的 `c` 实际上是一个指向 overflow page 的一个指针。
 - 当然 overflow page 可以是多个。假如一个 overflow page 依然不够大，我们可以使用几个 overflow page，它们之间继续用*指针*相连。
@@ -369,7 +369,7 @@ typedef struct {
 
 ###### 3.1.4 External Value Storage
 
-![22.jpg](C:/Users/xf/Desktop/CMU15445/pictures/22.jpg)
+![22.jpg](pictures/22.jpg)
 
 外部存储，实际不会将该属性的数据保存在tuple中，而是往里面保存一个指针或者是一个文件路径，它们指向能找到该数据的本地磁盘，或者网络存储，或者某些外部存储设备。
 
@@ -408,9 +408,9 @@ DESCRIBE student;
 
 #### 4 Storage Levels 
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4X-RjcFWNScWa57u0%252FScreen%20Shot%202019-02-19%20at%2012.50.59%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4X-RjcFWNScWa57u0%252FScreen%20Shot%202019-02-19%20at%2012.50.59%20PM.jpg)
 
-![image-20220420215731234](C:/Users/xf/Desktop/CMU15445/pictures/image-20220420215731234.png)
+![image-20220420215731234](pictures/image-20220420215731234.png)
 
 revisions表 ：保存的是每篇文章新的更新记录
 
@@ -465,15 +465,15 @@ Relational Data Model 将数据的 attributes 组合成 tuple，将结构相似�
 
 NSM 将一个 tuple 的所有 attributes 在 page 中连续地存储，这种存储方式非常适合 OLTP 场景，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4X3qmsw30ZvGZeX1R%252FScreen%20Shot%202019-02-19%20at%207.04.56%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4X3qmsw30ZvGZeX1R%252FScreen%20Shot%202019-02-19%20at%207.04.56%20PM.jpg)
 
 DBMS 针对一些常用 attributes 建立 Index，如例子中的 userID，一个查询语句通过 Index 找到相应的 tuples，返回查询结果，流程如下：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4X6-FRYb-oWOL_7Br%252FScreen%20Shot%202019-02-19%20at%207.07.09%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4X6-FRYb-oWOL_7Br%252FScreen%20Shot%202019-02-19%20at%207.07.09%20PM.jpg)
 
 但对于一个典型的 OLAP 查询，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4X8I7f3f-3Id2W9Dc%252FScreen%20Shot%202019-02-19%20at%207.09.38%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4X8I7f3f-3Id2W9Dc%252FScreen%20Shot%202019-02-19%20at%207.09.38%20PM.jpg)
 
 尽管整个查询只涉及到 tuple 的 hostname 与 lastLogin 两个 attributes，但查询过程中仍然需要读取 tuple 的所有 attributes
 
@@ -489,11 +489,11 @@ DBMS 针对一些常用 attributes 建立 Index，如例子中的 userID，一�
 
 DSM 将所有 tuples 的单个 attribute 连续地存储在一个 page 中，这种存储方式特别适用于 OLAP 场景，如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4XAhoVE_WLpjY6lBh%252FScreen%20Shot%202019-02-19%20at%207.17.24%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4XAhoVE_WLpjY6lBh%252FScreen%20Shot%202019-02-19%20at%207.17.24%20PM.jpg)
 
 这时候，就可以优雅地处理 OLAP 查询浪费 I/O 的问题：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4XDfuuJnIRk5wzeoG%252FScreen%20Shot%202019-02-19%20at%207.20.23%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4XDfuuJnIRk5wzeoG%252FScreen%20Shot%202019-02-19%20at%207.20.23%20PM.jpg)
 
 由于 DSM 把 attributes 分开存储，也引入了新的问题，比如：
 
@@ -504,7 +504,7 @@ DSM 将所有 tuples 的单个 attribute 连续地存储在一个 page 中，这
 
 如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4XFUANT4RYk-sof-s%252FScreen%20Shot%202019-02-19%20at%207.25.51%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LZ4Wq8LNTEzFCmrje83%252F-LZ4XFUANT4RYk-sof-s%252FScreen%20Shot%202019-02-19%20at%207.25.51%20PM.jpg)
 
 总结一下，DSM 的优缺点如下：
 

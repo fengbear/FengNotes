@@ -2,7 +2,7 @@
 
 回顾本课程的路线图：
 
-<img src="C:/Users/xf/Desktop/CMU15445/pictures/image-20220525094542280.png" alt="image-20220525094542280" style="zoom: 33%;" />
+<img src="pictures/image-20220525094542280.png" alt="image-20220525094542280" style="zoom: 33%;" />
 
 在前面的课程中介绍了 DBMS 的主要模块及架构，自底向上依次是 Disk Manager、Buffer Pool Manager、Access Methods、Operator Execution 及 Query Planning。但数据库要解决的问题并不仅仅停留在功能的实现上，它还需要具备：
 
@@ -139,24 +139,24 @@ COMMIT
 
 执行过程如下图所示：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lcut8zTn7Akdy-vPFlR%252F-LcvARiJ8r94h05pln1D%252FScreen%20Shot%202019-04-20%20at%2010.36.50%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Lcut8zTn7Akdy-vPFlR%252F-LcvARiJ8r94h05pln1D%252FScreen%20Shot%202019-04-20%20at%2010.36.50%20PM.jpg)
 
 当一个 transaction 在等待资源 (page fault、disk/network I/O) 时，或者当 CPU 存在其它空闲的 Core 时，其它 transaction 可以继续执行，因此我们需要将 transactions 的执行重叠 (interleave) 起来。
 
 Example 1 (Good)
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Ld2Z54nuQcC1eqJxEsD%252F-Ld2Z7ms19nsCGVkc6pk%252FScreen%20Shot%202019-04-22%20at%201.40.36%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Ld2Z54nuQcC1eqJxEsD%252F-Ld2Z7ms19nsCGVkc6pk%252FScreen%20Shot%202019-04-22%20at%201.40.36%20PM.jpg)
 
 Example 2 (Bad)
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Ld2Z54nuQcC1eqJxEsD%252F-Ld2ZH2NbX1aUNYulZzC%252FScreen%20Shot%202019-04-22%20at%201.42.08%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Ld2Z54nuQcC1eqJxEsD%252F-Ld2ZH2NbX1aUNYulZzC%252FScreen%20Shot%202019-04-22%20at%201.42.08%20PM.jpg)
 
 从 DBMS 的角度分析第二个例子：
 
 - A = A - 100 => R(A), W(A)
 - ...
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Ld2Z54nuQcC1eqJxEsD%252F-Ld2ZbHnJxKOA4xrREA9%252FScreen%20Shot%202019-04-22%20at%201.43.44%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Ld2Z54nuQcC1eqJxEsD%252F-Ld2ZbHnJxKOA4xrREA9%252FScreen%20Shot%202019-04-22%20at%201.43.44%20PM.jpg)
 
 如何判断一种重叠的 schdule 是正确的？
 
@@ -184,19 +184,19 @@ Example 2 (Bad)
 
 ***Read-Write Conflicts/Unrepeatable Reads*（不可重复读）**
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Ld2Z54nuQcC1eqJxEsD%252F-Ld2bdGLZFHxKn4j5jyu%252FScreen%20Shot%202019-04-22%20at%201.56.59%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Ld2Z54nuQcC1eqJxEsD%252F-Ld2bdGLZFHxKn4j5jyu%252FScreen%20Shot%202019-04-22%20at%201.56.59%20PM.jpg)
 
 一个事务先后读取同一条记录，但两次读取的数据不同。
 
 ***Write-Read Conflicts/Reading Uncommitted Data/Dirty Reads*（脏读）**
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Ld2Z54nuQcC1eqJxEsD%252F-Ld2byQOw-SjbrFm58nI%252FScreen%20Shot%202019-04-22%20at%201.58.01%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Ld2Z54nuQcC1eqJxEsD%252F-Ld2byQOw-SjbrFm58nI%252FScreen%20Shot%202019-04-22%20at%201.58.01%20PM.jpg)
 
 一个事务都到另一个事务还没有提交的数据
 
 ***Write-Write Conflicts/Overwriting Uncommitted Data***
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Ld2Z54nuQcC1eqJxEsD%252F-Ld2c5sHk911dFVCtMqg%252FScreen%20Shot%202019-04-22%20at%201.58.59%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-Ld2Z54nuQcC1eqJxEsD%252F-Ld2c5sHk911dFVCtMqg%252FScreen%20Shot%202019-04-22%20at%201.58.59%20PM.jpg)
 
 从以上例子可以理解 **serializability 对一个 schedule 意味着这个 schedule 是否正确**。serializability 有两个不同的级别：
 
@@ -210,29 +210,29 @@ View Serializability (No DBMS can do this)
 
 例 1：将 conflict serializable schedule S 转化为 serial schedule
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LdCdP-burZWkhWdoMaP%252F-LdCgSVEXsultXNNZFLA%252FScreen%20Shot%202019-04-24%20at%2012.54.14%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LdCdP-burZWkhWdoMaP%252F-LdCgSVEXsultXNNZFLA%252FScreen%20Shot%202019-04-24%20at%2012.54.14%20PM.jpg)
 
 R(B) 与 W(A) 不矛盾，是 non-conflicting operations，可以交换它们
 
 
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LdChJLDEgOtT9muvCHq%252F-LdCgaTtPUzY__K0-n76%252FScreen%20Shot%202019-04-24%20at%2012.54.31%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LdChJLDEgOtT9muvCHq%252F-LdCgaTtPUzY__K0-n76%252FScreen%20Shot%202019-04-24%20at%2012.54.31%20PM.jpg)
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LdChJLDEgOtT9muvCHq%252F-LdCgfImzjYRRD9Emw86%252FScreen%20Shot%202019-04-24%20at%2012.55.10%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LdChJLDEgOtT9muvCHq%252F-LdCgfImzjYRRD9Emw86%252FScreen%20Shot%202019-04-24%20at%2012.55.10%20PM.jpg)
 
 R(B) 与 R(A) 是 non-conflicting operations，交换它们
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LdChJLDEgOtT9muvCHq%252F-LdCgpJ4EgHsX5Tu0VNh%252FScreen%20Shot%202019-04-24%20at%2012.55.52%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LdChJLDEgOtT9muvCHq%252F-LdCgpJ4EgHsX5Tu0VNh%252FScreen%20Shot%202019-04-24%20at%2012.55.52%20PM.jpg)
 
 依次类推，分别交换 W(B) 与 W(A)，W(B) 与 R(A) 就能得到：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LdChJLDEgOtT9muvCHq%252F-LdChPSq4OxUpbUnFKTH%252FScreen%20Shot%202019-04-24%20at%2012.57.24%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LdChJLDEgOtT9muvCHq%252F-LdChPSq4OxUpbUnFKTH%252FScreen%20Shot%202019-04-24%20at%2012.57.24%20PM.jpg)
 
 因此 S 为 conflict serializable。
 
 例 2：S 无法转化成 serial schedule
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LdChJLDEgOtT9muvCHq%252F-LdChnA4mnmOn4_514pc%252FScreen%20Shot%202019-04-24%20at%201.00.05%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LdChJLDEgOtT9muvCHq%252F-LdChnA4mnmOn4_514pc%252FScreen%20Shot%202019-04-24%20at%201.00.05%20PM.jpg)
 
 由于两个 W(A) 之间是矛盾的，无法交换，因此 S 无法转化成 serial schedule。
 
@@ -244,21 +244,21 @@ R(B) 与 R(A) 是 non-conflicting operations，交换它们
 
 $T_i$的一个操作$O_i$与$T_j$的一个操作$O_j$冲突且$O_i$比$O_j$要早。
 
-<img src="C:/Users/xf/Desktop/CMU15445/pictures/image-20220527132211093.png" alt="image-20220527132211093" style="zoom: 50%;" />
+<img src="pictures/image-20220527132211093.png" alt="image-20220527132211093" style="zoom: 50%;" />
 
 如果一个调度的依赖图是无循环的，那么它就是conflict serializable 的。
 
 例1:
 
-![image-20220527132311255](C:/Users/xf/Desktop/CMU15445/pictures/image-20220527132311255.png)
+![image-20220527132311255](pictures/image-20220527132311255.png)
 
-![image-20220527132323851](C:/Users/xf/Desktop/CMU15445/pictures/image-20220527132323851.png)
+![image-20220527132323851](pictures/image-20220527132323851.png)
 
 例2：
 
-![image-20220527132339583](C:/Users/xf/Desktop/CMU15445/pictures/image-20220527132339583.png)
+![image-20220527132339583](pictures/image-20220527132339583.png)
 
-![image-20220527132357645](C:/Users/xf/Desktop/CMU15445/pictures/image-20220527132357645.png)
+![image-20220527132357645](pictures/image-20220527132357645.png)
 
 ###### 1.5.2 View Serializability
 
@@ -268,17 +268,17 @@ Schedules $S_1$ and $S_2$ are view equivalent if：
 + If $T_1$ reads value of A written by $T_2$ in $S_1$ , then $T_1$ also  reads value of A written by $T_2$ in $S_2$ .
 + If $T_1$ writes final value of A in $S_1$ , then $T_1$ also writes final  value of A in $S_2$ .
 
-![image-20220527162724819](C:/Users/xf/Desktop/CMU15445/pictures/image-20220527162724819.png)
+![image-20220527162724819](pictures/image-20220527162724819.png)
 
-![image-20220527162743276](C:/Users/xf/Desktop/CMU15445/pictures/image-20220527162743276.png)
+![image-20220527162743276](pictures/image-20220527162743276.png)
 
-![image-20220527162800284](C:/Users/xf/Desktop/CMU15445/pictures/image-20220527162800284.png)
+![image-20220527162800284](pictures/image-20220527162800284.png)
 
-![image-20220527162831012](C:/Users/xf/Desktop/CMU15445/pictures/image-20220527162831012.png)
+![image-20220527162831012](pictures/image-20220527162831012.png)
 
-![image-20220527162845558](C:/Users/xf/Desktop/CMU15445/pictures/image-20220527162845558.png)
+![image-20220527162845558](pictures/image-20220527162845558.png)
 
-![image-20220527162911071](C:/Users/xf/Desktop/CMU15445/pictures/image-20220527162911071.png)
+![image-20220527162911071](pictures/image-20220527162911071.png)
 
 **In practice, Conflict Serializability is what  systems support because it can be enforced  efficiently.**
 

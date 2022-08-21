@@ -25,7 +25,7 @@ Cost-based Search
 > 1. 基于规则的： 通过重写QUERY来消除不高效，不需要一个成本模型。
 > 2. 基于成本的： 使用成本模型来评估多种等价计划然后选择成本最小的。
 
-![image-20220520103112617](C:/Users/xf/Desktop/CMU15445/pictures/image-20220520103112617.png)
+![image-20220520103112617](pictures/image-20220520103112617.png)
 
 **Logical vs. Physical plans**
 
@@ -51,11 +51,11 @@ Physical operators define a specific execution  strategy using an access path.
 
 Predicate 通常有很高的选择性，可以过滤掉许多无用的数据。将 Predicate 推到查询计划的底部，可以在查询开始时就更多地过滤数据，举例如下：
 
-![image-20220524101609826](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524101609826.png)
+![image-20220524101609826](pictures/image-20220524101609826.png)
 
-![image-20220524101624614](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524101624614.png)
+![image-20220524101624614](pictures/image-20220524101624614.png)
 
-![image-20220524101736850](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524101736850.png)
+![image-20220524101736850](pictures/image-20220524101736850.png)
 
 核心思想如下：
 
@@ -70,41 +70,41 @@ Predicate 通常有很高的选择性，可以过滤掉许多无用的数据。�
 
 本方案对列存储数据库不适用。在行存储数据库中，越早过滤掉不用的字段越好，因此将 Projections 操作往查询计划底部推也能够缩小中间结果占用的空间大小，举例如下：
 
-![img](C:/Users/xf/Desktop/CMU15445/pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LapLaibKEqy0uOzxt1N%252F-LapOlNeBS4k6SZ45deL%252FScreen%20Shot%202019-03-25%20at%2011.10.13%20PM.jpg)
+![img](pictures/assets%252F-LMjQD5UezC9P8miypMG%252F-LapLaibKEqy0uOzxt1N%252F-LapOlNeBS4k6SZ45deL%252FScreen%20Shot%202019-03-25%20at%2011.10.13%20PM.jpg)
 
 ##### 2.2 More Examples
 
 ###### 2.2.1 **Impossible/Unnecessary Predicates**
 
-![image-20220524125002412](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524125002412.png)
+![image-20220524125002412](pictures/image-20220524125002412.png)
 
 可以变为
 
-![image-20220524125254246](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524125254246.png)
+![image-20220524125254246](pictures/image-20220524125254246.png)
 
 ###### 2.2.2 **Join Elimination**
 
-![image-20220524125226643](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524125226643.png)
+![image-20220524125226643](pictures/image-20220524125226643.png)
 
 可以变为
 
-![image-20220524125312748](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524125312748.png)
+![image-20220524125312748](pictures/image-20220524125312748.png)
 
 ###### 2.2.3 **Ignoring Projections**
 
-![image-20220524125339829](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524125339829.png)
+![image-20220524125339829](pictures/image-20220524125339829.png)
 
 可以变为
 
-![image-20220524125403909](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524125403909.png)
+![image-20220524125403909](pictures/image-20220524125403909.png)
 
 ###### 2.2.4 Merging Predicates
 
-![image-20220524125451500](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524125451500.png)
+![image-20220524125451500](pictures/image-20220524125451500.png)
 
 可以变为
 
-![image-20220524125504922](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524125504922.png)
+![image-20220524125504922](pictures/image-20220524125504922.png)
 
 **We can use static rules and heuristics to optimize a  query plan without needing to understand the  contents of the database.**
 
@@ -148,29 +148,29 @@ DBMS 需要保存每个 table 的一些统计信息在他们内部的catalog中�
 
 但是如果是更加复杂的谓词，范围条件或者交集运算之类的东西，如何算选择基数呢？
 
-![image-20220524232202482](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524232202482.png)
+![image-20220524232202482](pictures/image-20220524232202482.png)
 
 选择率sel就是一个函数，对于针对该表的一个给定条件来说，它会算出该表有多少符合该条件的tuple。
 
 那么针对不同的谓词，其sel为
 
 - **Equality：**$\operatorname{sel}(A=\text { constant })=S C(P) / N_{R}$
-- **Range Predicate：**![[公式]](C:/Users/xf/Desktop/CMU15445/pictures/equation.svg+xml)
-- **Negation Query：**![[公式]](C:/Users/xf/Desktop/CMU15445/pictures/equation-16610733675461.svg+xml)
-- **Conjunction Query：**![[公式]](C:/Users/xf/Desktop/CMU15445/pictures/equation-16610733675472.svg+xml) 。这里各个谓词需要独立
-- **Disjunction Query：**![[公式]](C:/Users/xf/Desktop/CMU15445/pictures/equation-16610733675473.svg+xml) 。同上
+- **Range Predicate：**![[公式]](pictures/equation.svg+xml)
+- **Negation Query：**![[公式]](pictures/equation-16610750949591.svg+xml)
+- **Conjunction Query：**![[公式]](pictures/equation-16610750949602.svg+xml) 。这里各个谓词需要独立
+- **Disjunction Query：**![[公式]](pictures/equation-16610750949603.svg+xml) 。同上
 
 以下是一些例子：
 
-![image-20220524232711126](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524232711126.png)
+![image-20220524232711126](pictures/image-20220524232711126.png)
 
-![image-20220524232843489](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524232843489.png)
+![image-20220524232843489](pictures/image-20220524232843489.png)
 
-![image-20220524233001534](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524233001534.png)
+![image-20220524233001534](pictures/image-20220524233001534.png)
 
-![image-20220524233115046](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524233115046.png)
+![image-20220524233115046](pictures/image-20220524233115046.png)
 
-![image-20220524233148748](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524233148748.png)
+![image-20220524233148748](pictures/image-20220524233148748.png)
 
 ###### 3.1.2 Cost Estimations
 
@@ -180,31 +180,31 @@ DBMS 需要保存每个 table 的一些统计信息在他们内部的catalog中�
 
 最简单的直方图，只需要统计列中不同值的出现次数
 
-![image-20220524234142543](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524234142543.png)
+![image-20220524234142543](pictures/image-20220524234142543.png)
 
-![image-20220524234203013](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524234203013.png)
+![image-20220524234203013](pictures/image-20220524234203013.png)
 
 但是上述给每个不同的值都存储一个该值有多少个的话，太大了。解决方法就是划分bucket，一个bucket中我们只保存一个值，我们不会为一个bucket中的每一个元素都保存一个值。
 
-![image-20220524235654974](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524235654974.png)
+![image-20220524235654974](pictures/image-20220524235654974.png)
 
 当bucket = 3，会转变为以下的直方图：
 
-![image-20220524235706256](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524235706256.png)
+![image-20220524235706256](pictures/image-20220524235706256.png)
 
 但上述方法也不太好，等宽bucket可能有的bucket中的值很多，有的很少。所以使用变宽bucket
 
-![image-20220524235902418](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524235902418.png)
+![image-20220524235902418](pictures/image-20220524235902418.png)
 
-![image-20220524235909482](C:/Users/xf/Desktop/CMU15445/pictures/image-20220524235909482.png)
+![image-20220524235909482](pictures/image-20220524235909482.png)
 
 **SAMPLING**
 
 维护一张样本表，根据该样本来衍生出统计信息。
 
-![image-20220525000327386](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525000327386.png)
+![image-20220525000327386](pictures/image-20220525000327386.png)
 
-![image-20220525000340002](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525000340002.png)
+![image-20220525000340002](pictures/image-20220525000340002.png)
 
 **通过以上两种方法，我们可以(粗略地)估计谓词的sel，那么我们实际上可以用它们做什么呢?**
 
@@ -232,7 +232,7 @@ Pick the best access method.
 
 其次是评估条件时的顺序，当一个评估条件可以提前丢掉更多数据，我肯定先评估这个条件。（这时就可以用到sel了）
 
-![image-20220525001703172](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525001703172.png)
+![image-20220525001703172](pictures/image-20220525001703172.png)
 
 **sargable**
 
@@ -241,9 +241,9 @@ Pick the best access method.
 
 ###### 3.2.2 Multi-Relation query planning
 
-![image-20220525002032826](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525002032826.png)
+![image-20220525002032826](pictures/image-20220525002032826.png)
 
-![image-20220525002123461](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525002123461.png)
+![image-20220525002123461](pictures/image-20220525002123461.png)
 
 这样不需要延后结果，A与Bjion的结果可以直接去到下一个jion operator 与C jion
 
@@ -251,49 +251,49 @@ Pick the best access method.
 
 如何枚举我们的query plan？
 
-![image-20220525002456230](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525002456230.png)
+![image-20220525002456230](pictures/image-20220525002456230.png)
 
 **Dynamic Programming**
 
-![image-20220525002527604](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525002527604.png)
+![image-20220525002527604](pictures/image-20220525002527604.png)
 
-![image-20220525002536286](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525002536286.png)
+![image-20220525002536286](pictures/image-20220525002536286.png)
 
-![image-20220525002544741](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525002544741.png)
+![image-20220525002544741](pictures/image-20220525002544741.png)
 
-![image-20220525002554382](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525002554382.png)
+![image-20220525002554382](pictures/image-20220525002554382.png)
 
-![image-20220525002606257](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525002606257.png)
+![image-20220525002606257](pictures/image-20220525002606257.png)
 
 举一个具体的例子（完整版）：
 
-![image-20220525002844303](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525002844303.png)
+![image-20220525002844303](pictures/image-20220525002844303.png)
 
-![image-20220525002918944](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525002918944.png)
+![image-20220525002918944](pictures/image-20220525002918944.png)
 
-![image-20220525002906148](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525002906148.png)
+![image-20220525002906148](pictures/image-20220525002906148.png)
 
-![image-20220525002959769](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525002959769.png)
+![image-20220525002959769](pictures/image-20220525002959769.png)
 
-![image-20220525003042649](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525003042649.png)
+![image-20220525003042649](pictures/image-20220525003042649.png)
 
 
 
 还有一种优化方法GEQO
 
-![image-20220525003200104](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525003200104.png)
+![image-20220525003200104](pictures/image-20220525003200104.png)
 
-![image-20220525003256405](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525003256405.png)
+![image-20220525003256405](pictures/image-20220525003256405.png)
 
-![image-20220525003308371](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525003308371.png)
+![image-20220525003308371](pictures/image-20220525003308371.png)
 
-![image-20220525003342758](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525003342758.png)
+![image-20220525003342758](pictures/image-20220525003342758.png)
 
-![image-20220525003352401](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525003352401.png)
+![image-20220525003352401](pictures/image-20220525003352401.png)
 
-![image-20220525003400962](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525003400962.png)
+![image-20220525003400962](pictures/image-20220525003400962.png)
 
-![image-20220525003409422](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525003409422.png)
+![image-20220525003409422](pictures/image-20220525003409422.png)
 
 ###### 3.2.3 Nested sub-queries
 
@@ -306,13 +306,13 @@ DBMS将where子句中的嵌套子查询视为接受参数并返回单个值或�
 
 **rewrite**
 
-![image-20220525003627173](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525003627173.png)
+![image-20220525003627173](pictures/image-20220525003627173.png)
 
-![image-20220525003655438](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525003655438.png)
+![image-20220525003655438](pictures/image-20220525003655438.png)
 
 **Decomposing query**
 
-![image-20220525003741134](C:/Users/xf/Desktop/CMU15445/pictures/image-20220525003741134.png)
+![image-20220525003741134](pictures/image-20220525003741134.png)
 
 对于更难的查询，优化器将查询分解成块，然后一次集中处理一个块
 
