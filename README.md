@@ -2,7 +2,7 @@
 
 OS、DB、计网主要整理自小林coding！[小林coding公众号链接](https://www.xiaolincoding.com/)
 
-CMU15445笔记借鉴整理于[罗济高的博客](https://cakebytheoceanluo.github.io/categories/CMU-15445/)
+CMU15445笔记借鉴整理于[罗济高的博客](https://cakebytheoceanluo.github.io/categories/CMU-15445/)以及[公开课笔记](https://zhenghe.gitbook.io/open-courses/cmu-15-445-645-database-systems/database-storage)
 
 Linux就基本google自行整理
 
