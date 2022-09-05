@@ -1,6 +1,6 @@
 # Feng八股
 
-OS、DB、计网主要整理自[小林coding公众号](https://www.xiaolincoding.com/)!感觉写的很好！
+OS、DB、计网主要整理自[小林coding公众号](https://www.xiaolincoding.com/)！感觉写的很好！基本上是又重新抄了一遍
 
 CMU15445笔记借鉴整理于[罗济高的博客](https://cakebytheoceanluo.github.io/categories/CMU-15445/)以及[公开课笔记](https://zhenghe.gitbook.io/open-courses/cmu-15-445-645-database-systems/database-storage)
 
